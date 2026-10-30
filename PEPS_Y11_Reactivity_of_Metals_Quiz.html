@@ -1,0 +1,143 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Reactivity of Metals Quiz</title>
+<style>
+:root{--bg:#f5f7fb;--card:#fff;--ink:#1b2333;--muted:#5f6b7f;--line:#d9dfea;--brand:#1f4e8c;--ok:#1b7f4b;--okbg:#e6f5ec;--bad:#b3261e;--badbg:#fbe9e7;--sel:#e8f0fb}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#10151f;--card:#18202e;--ink:#e8edf6;--muted:#9aa7bd;--line:#2b3649;--brand:#7fb0ee;--ok:#5fd394;--okbg:#14301f;--bad:#ff8a80;--badbg:#3a1a18;--sel:#1e2b42}}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.5 system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif}
+.wrap{max-width:720px;margin:0 auto;padding:20px 16px 48px}
+header{text-align:center;margin-bottom:18px}
+header .school{font-size:13px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+h1{font-size:26px;margin:4px 0}
+header p{margin:4px 0;color:var(--muted)}
+.card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:20px;margin-bottom:16px}
+label{display:block;font-weight:600;margin:10px 0 4px}
+input[type=text]{width:100%;padding:11px 12px;border:1px solid var(--line);border-radius:10px;background:var(--bg);color:var(--ink);font-size:16px}
+button{font:inherit;cursor:pointer}
+.btn{background:var(--brand);color:#fff;border:0;border-radius:10px;padding:12px 20px;font-weight:600;min-height:44px}
+.btn.sec{background:transparent;color:var(--brand);border:1px solid var(--brand)}
+.btn:disabled{opacity:.45;cursor:not-allowed}
+.bar{height:8px;background:var(--line);border-radius:6px;overflow:hidden;margin-bottom:14px}
+.bar i{display:block;height:100%;background:var(--brand);width:0;transition:width .3s}
+.meta{display:flex;justify-content:space-between;color:var(--muted);font-size:14px;margin-bottom:8px}
+.q{font-size:19px;font-weight:600;margin:6px 0 14px}
+.opt{display:flex;gap:10px;align-items:flex-start;width:100%;text-align:left;background:var(--card);color:var(--ink);border:1.5px solid var(--line);border-radius:10px;padding:12px 14px;margin-bottom:10px;min-height:48px}
+.opt:hover:not(:disabled){background:var(--sel)}
+.opt .k{font-weight:700;color:var(--brand);min-width:20px}
+.opt.right{background:var(--okbg);border-color:var(--ok)}
+.opt.wrong{background:var(--badbg);border-color:var(--bad)}
+.fb{margin-top:10px;padding:12px 14px;border-radius:10px;border:1px solid var(--line)}
+.fb.ok{background:var(--okbg);border-color:var(--ok)}
+.fb.no{background:var(--badbg);border-color:var(--bad)}
+.score{font-size:46px;font-weight:700;text-align:center;margin:4px 0}
+.band{text-align:center;font-weight:700;color:var(--brand);font-size:20px}
+ul.tips{padding-left:20px}
+.rev{border-top:1px solid var(--line);padding:12px 0}
+.rev:first-child{border-top:0}
+.hidden{display:none}
+.row{display:flex;gap:10px;flex-wrap:wrap}
+sub,sup{line-height:0}
+#tp .r{display:flex;align-items:center;gap:10px;margin:8px 0}#tp .r span.n{flex:0 0 46%}#tp .r .b{flex:1;height:10px;background:var(--line);border-radius:6px;overflow:hidden}#tp .r .b i{display:block;height:100%;background:var(--brand)}#tp .r span.v{min-width:44px;text-align:right;font-weight:600}
+@media print{body{background:#fff;color:#000}.btn,.row{display:none}.card{border:1px solid #999}}
+</style>
+</head>
+<body>
+<div class="wrap">
+<header>
+<div class="school">Providence English Private School</div>
+<h1>Reactivity of Metals Quiz</h1>
+<p>Year 11 IGCSE Chemistry · Miss Emmah M. Tamnai</p>
+</header>
+
+<section id="start" class="card">
+<p>24 multiple-choice questions on the reactions of metals, displacement reactions and the reactivity series. You get feedback after every answer and a score for each topic at the end.</p>
+<label for="nm">Name</label><input id="nm" type="text" autocomplete="name">
+<label for="cl">Class</label><input id="cl" type="text" placeholder="e.g. 11A">
+<p style="margin-top:16px"><button class="btn" id="go" disabled>Start quiz</button></p>
+</section>
+
+<section id="play" class="card hidden">
+<div class="meta"><span id="cnt"></span><span id="sc"></span></div>
+<div class="bar"><i id="pg"></i></div>
+<div class="q" id="qt"></div>
+<div id="opts"></div>
+<div id="fb" class="fb hidden" role="status" aria-live="polite"></div>
+<p style="margin-top:14px"><button class="btn hidden" id="next">Next question</button></p>
+</section>
+
+<section id="end" class="hidden">
+<div class="card">
+<div id="who" style="text-align:center;color:var(--muted)"></div>
+<div class="score" id="fin"></div>
+<div class="band" id="band"></div>
+<p id="bandtxt" style="text-align:center;color:var(--muted)"></p>
+<div class="row" style="justify-content:center">
+<button class="btn" id="again">Try again</button>
+<button class="btn sec" onclick="window.print()">Print / save result</button>
+</div>
+</div>
+<div class="card"><h2 style="margin-top:0;font-size:18px">Score by topic</h2><div id="tp"></div></div>
+<div class="card"><h2 style="margin-top:0;font-size:18px">Next steps</h2><ul class="tips" id="tips"></ul></div>
+<div class="card"><h2 style="margin-top:0;font-size:18px">Questions to review</h2><div id="review"></div></div>
+</section>
+</div>
+
+<script>
+var Q=[{"t": "Reactions of metals", "q": "Which metal reacts violently with cold water?", "o": ["potassium", "zinc", "iron", "copper"], "a": 0, "e": "Potassium is at the top of the reactivity series. It reacts violently with cold water, giving potassium hydroxide and hydrogen."}, {"t": "Reactions of metals", "q": "What are the products when sodium reacts with cold water?", "o": ["sodium oxide and hydrogen", "sodium hydroxide and hydrogen", "sodium hydroxide and oxygen", "sodium chloride and hydrogen"], "a": 1, "e": "Sodium + water → sodium hydroxide + hydrogen. The solution is alkaline."}, {"t": "Reactions of metals", "q": "Which metal reacts only very slowly with cold water but burns brightly in steam?", "o": ["magnesium", "copper", "gold", "silver"], "a": 0, "e": "Magnesium reacts very slowly with cold water and rapidly with steam, forming magnesium oxide and hydrogen. Copper, silver and gold do not react."}, {"t": "Reactions of metals", "q": "What are the products when zinc reacts with dilute sulfuric acid?", "o": ["zinc oxide and water", "zinc sulfate and hydrogen", "zinc chloride and hydrogen", "zinc hydroxide and oxygen"], "a": 1, "e": "Metal + acid → salt + hydrogen. Sulfuric acid gives a sulfate salt."}, {"t": "Reactions of metals", "q": "Magnesium ribbon is added to dilute hydrochloric acid. Which observation is correct?", "o": ["The ribbon turns blue", "Bubbles form and the ribbon gets smaller", "A brown solid forms", "Nothing happens"], "a": 1, "e": "Magnesium reacts with the acid to give hydrogen gas (bubbles) and magnesium chloride, so the ribbon dissolves."}, {"t": "Reactions of metals", "q": "Which equation correctly shows magnesium reacting with dilute hydrochloric acid?", "o": ["Mg + HCl → MgCl + H<sub>2</sub>", "Mg + 2HCl → MgCl<sub>2</sub> + H<sub>2</sub>", "Mg + 2HCl → MgCl<sub>2</sub> + 2H", "2Mg + HCl → Mg<sub>2</sub>Cl + H<sub>2</sub>"], "a": 1, "e": "Mg + 2HCl → MgCl<sub>2</sub> + H<sub>2</sub>: one Mg, two H, two Cl on each side."}, {"t": "Reactions of metals", "q": "Which equation for sodium reacting with water is correctly balanced?", "o": ["Na + H<sub>2</sub>O → NaOH + H<sub>2</sub>", "2Na + 2H<sub>2</sub>O → 2NaOH + H<sub>2</sub>", "Na + 2H<sub>2</sub>O → NaOH + H<sub>2</sub>", "2Na + H<sub>2</sub>O → 2NaOH + H<sub>2</sub>"], "a": 1, "e": "2Na + 2H<sub>2</sub>O → 2NaOH + H<sub>2</sub>: 2 Na, 4 H and 2 O on each side."}, {"t": "Reactions of metals", "q": "Why does copper not react with dilute hydrochloric acid?", "o": ["Copper is less reactive than hydrogen", "Copper is more reactive than hydrogen", "Copper is a gas", "Hydrochloric acid is too weak to react with any metal"], "a": 0, "e": "Copper is below hydrogen in the reactivity series, so it cannot displace hydrogen from the acid."}, {"t": "Displacement", "q": "Which mixture will react?", "o": ["copper and zinc sulfate solution", "zinc and copper(II) sulfate solution", "silver and copper(II) sulfate solution", "gold and iron(II) sulfate solution"], "a": 1, "e": "Zinc is more reactive than copper, so zinc displaces copper from copper(II) sulfate."}, {"t": "Displacement", "q": "Zinc is added to blue copper(II) sulfate solution. What is observed?", "o": ["A red-brown solid forms and the blue colour fades", "A grey solid forms and the solution stays blue", "The zinc gets bigger and the solution turns green", "Bubbles form and the solution turns colourless"], "a": 0, "e": "Copper (red-brown) is deposited and the blue Cu<sup>2+</sup> ions are used up, so the blue colour fades."}, {"t": "Displacement", "q": "In the reaction Mg + Cu<sup>2+</sup> → Mg<sup>2+</sup> + Cu, what happens to each magnesium atom?", "o": ["It gains two electrons", "It loses two electrons", "It gains two protons", "It shares two electrons"], "a": 1, "e": "Mg → Mg<sup>2+</sup> + 2e<sup>−</sup>: each magnesium atom loses two electrons and the copper ions gain them."}, {"t": "Displacement", "q": "A clean copper wire is placed in silver nitrate solution. What happens?", "o": ["Nothing, because silver is more reactive", "Silver forms on the wire and the solution turns blue", "Copper forms on the wire and the solution turns colourless", "Hydrogen bubbles form"], "a": 1, "e": "Copper is more reactive than silver, so it displaces silver: Cu + 2AgNO<sub>3</sub> → Cu(NO<sub>3</sub>)<sub>2</sub> + 2Ag. The solution turns blue."}, {"t": "Displacement", "q": "Which metal can displace iron from iron(II) sulfate solution?", "o": ["copper", "silver", "magnesium", "gold"], "a": 2, "e": "Only a metal more reactive than iron can displace it. Magnesium is above iron; copper, silver and gold are below."}, {"t": "Displacement", "q": "Why does iron not react with magnesium sulfate solution?", "o": ["Iron is less reactive than magnesium", "Iron is more reactive than magnesium", "Magnesium sulfate is insoluble", "Iron is a non-metal"], "a": 0, "e": "Iron is below magnesium in the series, so it cannot displace magnesium from its compound."}, {"t": "Displacement", "q": "Metal A displaces metals B and C from their salt solutions. Metal C displaces metal B. What is the order of reactivity, most reactive first?", "o": ["A, B, C", "B, C, A", "A, C, B", "C, A, B"], "a": 2, "e": "A displaces both, so A is most reactive. C displaces B, so C is more reactive than B: A, C, B."}, {"t": "Displacement", "q": "Which word equation is correct for magnesium added to zinc sulfate solution?", "o": ["magnesium + zinc sulfate → magnesium sulfate + zinc", "magnesium + zinc sulfate → zinc + magnesium oxide", "zinc + magnesium sulfate → zinc sulfate + magnesium", "magnesium + zinc sulfate → no reaction"], "a": 0, "e": "Magnesium is more reactive than zinc, so it displaces zinc and forms magnesium sulfate."}, {"t": "Reactivity series and extraction", "q": "Which metal is extracted from its ore by electrolysis?", "o": ["iron", "aluminium", "copper", "lead"], "a": 1, "e": "Aluminium is more reactive than carbon, so its ore (aluminium oxide) must be electrolysed. Iron, copper and lead can be extracted with carbon or by simple heating."}, {"t": "Reactivity series and extraction", "q": "Why can iron be extracted by heating its oxide with carbon?", "o": ["Iron is less reactive than carbon", "Iron is more reactive than carbon", "Carbon is a catalyst", "Iron oxide is a liquid"], "a": 0, "e": "Carbon can only remove oxygen from the oxide of a metal that is less reactive than carbon."}, {"t": "Reactivity series and extraction", "q": "Why is gold found uncombined in the Earth’s crust?", "o": ["It is very unreactive", "It is the most reactive metal", "It reacts with water to form a stable compound", "It is a liquid at room temperature"], "a": 0, "e": "Gold does not react with oxygen, water or acids, so it is found as the metal itself."}, {"t": "Reactivity series and extraction", "q": "Why can potassium not be extracted by heating its oxide with carbon?", "o": ["Potassium is more reactive than carbon", "Potassium is less reactive than carbon", "Potassium oxide is a gas", "Carbon is a catalyst"], "a": 0, "e": "Carbon cannot take oxygen from a more reactive metal. Potassium must be extracted by electrolysis."}, {"t": "Reactivity series and extraction", "q": "Which metal does not react with water, steam or dilute acid?", "o": ["iron", "zinc", "copper", "magnesium"], "a": 2, "e": "Copper is below hydrogen in the series, so it does not react with water, steam or dilute acids."}, {"t": "Reactivity series and extraction", "q": "Aluminium is high in the reactivity series but is used for aircraft and drink cans. Why does it seem unreactive?", "o": ["It has a protective layer of aluminium oxide", "It is below hydrogen in the series", "It does not form ions", "It is a non-metal"], "a": 0, "e": "A thin, strong layer of aluminium oxide on the surface stops the metal underneath from reacting."}, {"t": "Reactivity series and extraction", "q": "A piece of zinc is attached to a steel ship’s hull. Why?", "o": ["Zinc is more reactive than iron, so it corrodes instead of the steel", "Zinc is less reactive than iron", "Zinc makes the ship lighter", "Zinc reacts with sea water to form steel"], "a": 0, "e": "This is sacrificial protection: the more reactive zinc loses electrons in preference to iron, so the steel does not rust."}, {"t": "Reactivity series and extraction", "q": "Which list shows the metals in order of reactivity, most reactive first?", "o": ["calcium, zinc, iron, copper", "copper, iron, zinc, calcium", "zinc, calcium, copper, iron", "iron, copper, calcium, zinc"], "a": 0, "e": "Calcium > zinc > iron > copper."}];
+var TOPICS=["Reactions of metals", "Displacement", "Reactivity series and extraction"];
+var BANDS={"Exceeding": {"t": "Excellent understanding of reactivity.", "tips": ["Use experimental data to place an unfamiliar metal in the reactivity series and justify it.", "Write ionic equations with state symbols for displacement reactions.", "Challenge: explain why aluminium needs electrolysis but iron can be extracted with carbon."]}, "Secure": {"t": "Good understanding. A few ideas need tightening.", "tips": ["Always state: the more reactive metal displaces the less reactive metal.", "Practise balancing equations such as Mg + 2HCl → MgCl<sub>2</sub> + H<sub>2</sub>.", "Check your weakest topic below and revise it first."]}, "Developing": {"t": "You know the main ideas. Keep practising.", "tips": ["Learn the reactivity series with a mnemonic: K, Na, Ca, Mg, Al, Zn, Fe, Cu, Ag, Au.", "Practise word equations: metal + acid → salt + hydrogen.", "Learn the test for hydrogen: lighted splint, squeaky pop."]}, "Beginning": {"t": "You are starting to build understanding. Ask for help and try again.", "tips": ["Learn the reactivity series from most to least reactive using flash cards.", "Draw what you see when magnesium reacts with dilute acid.", "Ask your teacher for a support session and try the quiz again."]}};
+var $=function(id){return document.getElementById(id)};
+var order,idx,score,missed,locked;
+function shuffle(a){for(var i=a.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1));var t=a[i];a[i]=a[j];a[j]=t}return a}
+function chk(){$("go").disabled=!$("nm").value.trim()}
+$("nm").addEventListener("input",chk);
+$("go").onclick=function(){start()};
+$("again").onclick=function(){$("end").classList.add("hidden");start()};
+function start(){order=shuffle(Q.map(function(_,i){return i}));idx=0;score=0;missed=[];$("start").classList.add("hidden");$("play").classList.remove("hidden");show()}
+function show(){
+  locked=false;var n=order[idx],q=Q[n];
+  $("cnt").textContent="Question "+(idx+1)+" of "+Q.length;$("sc").textContent="Score: "+score;
+  $("pg").style.width=(idx/Q.length*100)+"%";
+  $("qt").innerHTML=q.q;$("fb").className="fb hidden";$("next").classList.add("hidden");
+  var idxs=shuffle(q.o.map(function(_,i){return i}));var h="";
+  idxs.forEach(function(oi,k){h+='<button class="opt" data-o="'+oi+'"><span class="k">'+"ABCD"[k]+'</span><span>'+q.o[oi]+'</span></button>'});
+  $("opts").innerHTML=h;
+  Array.prototype.forEach.call(document.querySelectorAll(".opt"),function(b){b.onclick=function(){pick(b)}});
+}
+function pick(b){
+  if(locked)return;locked=true;var n=order[idx],q=Q[n],c=+b.dataset.o,ok=c===q.a;
+  Array.prototype.forEach.call(document.querySelectorAll(".opt"),function(x){x.disabled=true;if(+x.dataset.o===q.a)x.classList.add("right")});
+  if(ok){score++}else{b.classList.add("wrong");missed.push(n)}
+  var fb=$("fb");fb.className="fb "+(ok?"ok":"no");
+  fb.innerHTML="<strong>"+(ok?"Correct.":"Not quite.")+"</strong> "+q.e;
+  $("sc").textContent="Score: "+score;
+  $("next").textContent=idx===Q.length-1?"See my result":"Next question";$("next").classList.remove("hidden");$("next").focus();
+}
+$("next").onclick=function(){idx++;if(idx>=Q.length)finish();else show()};
+function finish(){
+  $("play").classList.add("hidden");$("end").classList.remove("hidden");
+  var pct=Math.round(score/Q.length*100);
+  $("who").textContent=$("nm").value.trim()+($("cl").value.trim()?" · "+$("cl").value.trim():"");
+  $("fin").textContent=score+" / "+Q.length+" ("+pct+"%)";
+  var b=pct>=85?"Exceeding":pct>=65?"Secure":pct>=45?"Developing":"Beginning";
+  var t=BANDS[b].t,tips=BANDS[b].tips.slice();
+  var by={};TOPICS.forEach(function(x){by[x]={s:0,n:0}});
+  Q.forEach(function(q,i){by[q.t].n++});
+  Q.forEach(function(q,i){if(missed.indexOf(i)<0)by[q.t].s++});
+  var worst=null,wp=2;
+  $("tp").innerHTML=TOPICS.map(function(x){var p=by[x].s/by[x].n;if(p<wp){wp=p;worst=x}return'<div class="r"><span class="n">'+x+'</span><span class="b"><i style="width:'+Math.round(p*100)+'%"></i></span><span class="v">'+by[x].s+'/'+by[x].n+'</span></div>'}).join("");
+  if(wp<1)tips.push("Revise first: <strong>"+worst+"</strong>.");
+  $("band").textContent=b;$("bandtxt").textContent=t;
+  $("tips").innerHTML=tips.map(function(x){return"<li>"+x+"</li>"}).join("");
+  var r=$("review");
+  if(!missed.length){r.innerHTML="<p>Full marks. Nothing to review.</p>"}
+  else{r.innerHTML=missed.map(function(n){var q=Q[n];return'<div class="rev"><div><strong>'+q.q+'</strong></div><div style="color:var(--ok)">Answer: '+q.o[q.a]+'</div><div style="color:var(--muted)">'+q.e+'</div></div>'}).join("")}
+  window.scrollTo(0,0);
+}
+</script>
+</body>
+</html>
