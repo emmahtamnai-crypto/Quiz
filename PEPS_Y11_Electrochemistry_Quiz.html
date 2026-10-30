@@ -1,0 +1,143 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Electrochemistry Quiz</title>
+<style>
+:root{--bg:#f5f7fb;--card:#fff;--ink:#1b2333;--muted:#5f6b7f;--line:#d9dfea;--brand:#1f4e8c;--ok:#1b7f4b;--okbg:#e6f5ec;--bad:#b3261e;--badbg:#fbe9e7;--sel:#e8f0fb}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#10151f;--card:#18202e;--ink:#e8edf6;--muted:#9aa7bd;--line:#2b3649;--brand:#7fb0ee;--ok:#5fd394;--okbg:#14301f;--bad:#ff8a80;--badbg:#3a1a18;--sel:#1e2b42}}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.5 system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif}
+.wrap{max-width:720px;margin:0 auto;padding:20px 16px 48px}
+header{text-align:center;margin-bottom:18px}
+header .school{font-size:13px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+h1{font-size:26px;margin:4px 0}
+header p{margin:4px 0;color:var(--muted)}
+.card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:20px;margin-bottom:16px}
+label{display:block;font-weight:600;margin:10px 0 4px}
+input[type=text]{width:100%;padding:11px 12px;border:1px solid var(--line);border-radius:10px;background:var(--bg);color:var(--ink);font-size:16px}
+button{font:inherit;cursor:pointer}
+.btn{background:var(--brand);color:#fff;border:0;border-radius:10px;padding:12px 20px;font-weight:600;min-height:44px}
+.btn.sec{background:transparent;color:var(--brand);border:1px solid var(--brand)}
+.btn:disabled{opacity:.45;cursor:not-allowed}
+.bar{height:8px;background:var(--line);border-radius:6px;overflow:hidden;margin-bottom:14px}
+.bar i{display:block;height:100%;background:var(--brand);width:0;transition:width .3s}
+.meta{display:flex;justify-content:space-between;color:var(--muted);font-size:14px;margin-bottom:8px}
+.q{font-size:19px;font-weight:600;margin:6px 0 14px}
+.opt{display:flex;gap:10px;align-items:flex-start;width:100%;text-align:left;background:var(--card);color:var(--ink);border:1.5px solid var(--line);border-radius:10px;padding:12px 14px;margin-bottom:10px;min-height:48px}
+.opt:hover:not(:disabled){background:var(--sel)}
+.opt .k{font-weight:700;color:var(--brand);min-width:20px}
+.opt.right{background:var(--okbg);border-color:var(--ok)}
+.opt.wrong{background:var(--badbg);border-color:var(--bad)}
+.fb{margin-top:10px;padding:12px 14px;border-radius:10px;border:1px solid var(--line)}
+.fb.ok{background:var(--okbg);border-color:var(--ok)}
+.fb.no{background:var(--badbg);border-color:var(--bad)}
+.score{font-size:46px;font-weight:700;text-align:center;margin:4px 0}
+.band{text-align:center;font-weight:700;color:var(--brand);font-size:20px}
+ul.tips{padding-left:20px}
+.rev{border-top:1px solid var(--line);padding:12px 0}
+.rev:first-child{border-top:0}
+.hidden{display:none}
+.row{display:flex;gap:10px;flex-wrap:wrap}
+sub,sup{line-height:0}
+#tp .r{display:flex;align-items:center;gap:10px;margin:8px 0}#tp .r span.n{flex:0 0 46%}#tp .r .b{flex:1;height:10px;background:var(--line);border-radius:6px;overflow:hidden}#tp .r .b i{display:block;height:100%;background:var(--brand)}#tp .r span.v{min-width:44px;text-align:right;font-weight:600}
+@media print{body{background:#fff;color:#000}.btn,.row{display:none}.card{border:1px solid #999}}
+</style>
+</head>
+<body>
+<div class="wrap">
+<header>
+<div class="school">Providence English Private School</div>
+<h1>Electrochemistry Quiz</h1>
+<p>Year 11 IGCSE Chemistry · Miss Emmah M. Tamnai</p>
+</header>
+
+<section id="start" class="card">
+<p>24 multiple-choice questions on electrolysis of molten compounds, electrolysis of aqueous solutions, and applications including fuel cells. You get feedback after every answer and a score for each topic at the end.</p>
+<label for="nm">Name</label><input id="nm" type="text" autocomplete="name">
+<label for="cl">Class</label><input id="cl" type="text" placeholder="e.g. 11A">
+<p style="margin-top:16px"><button class="btn" id="go" disabled>Start quiz</button></p>
+</section>
+
+<section id="play" class="card hidden">
+<div class="meta"><span id="cnt"></span><span id="sc"></span></div>
+<div class="bar"><i id="pg"></i></div>
+<div class="q" id="qt"></div>
+<div id="opts"></div>
+<div id="fb" class="fb hidden" role="status" aria-live="polite"></div>
+<p style="margin-top:14px"><button class="btn hidden" id="next">Next question</button></p>
+</section>
+
+<section id="end" class="hidden">
+<div class="card">
+<div id="who" style="text-align:center;color:var(--muted)"></div>
+<div class="score" id="fin"></div>
+<div class="band" id="band"></div>
+<p id="bandtxt" style="text-align:center;color:var(--muted)"></p>
+<div class="row" style="justify-content:center">
+<button class="btn" id="again">Try again</button>
+<button class="btn sec" onclick="window.print()">Print / save result</button>
+</div>
+</div>
+<div class="card"><h2 style="margin-top:0;font-size:18px">Score by topic</h2><div id="tp"></div></div>
+<div class="card"><h2 style="margin-top:0;font-size:18px">Next steps</h2><ul class="tips" id="tips"></ul></div>
+<div class="card"><h2 style="margin-top:0;font-size:18px">Questions to review</h2><div id="review"></div></div>
+</section>
+</div>
+
+<script>
+var Q=[{"t": "Electrolysis and molten electrolytes", "q": "What is electrolysis?", "o": ["The breaking down of an ionic compound, when molten or dissolved, using electricity", "The breaking down of a covalent compound using heat", "The joining of two elements using a catalyst", "The movement of electrons through a metal wire"], "a": 0, "e": "Electrolysis uses an electric current to decompose an ionic compound that is molten or in solution (the electrolyte)."}, {"t": "Electrolysis and molten electrolytes", "q": "Why must solid lead(II) bromide be melted before it can be electrolysed?", "o": ["The ions are free to move only when it is molten", "It contains free electrons only when molten", "Melting makes the electrodes conduct", "It is a covalent compound"], "a": 0, "e": "In the solid, ions are held in fixed positions in the lattice. When molten they can move and carry charge."}, {"t": "Electrolysis and molten electrolytes", "q": "The cathode is the electrode connected to the:", "o": ["negative terminal of the power supply", "positive terminal of the power supply", "salt bridge", "electrolyte"], "a": 0, "e": "PANIC: Positive Anode, Negative Is Cathode."}, {"t": "Electrolysis and molten electrolytes", "q": "During the electrolysis of molten lead(II) bromide, bromide ions move to:", "o": ["the anode, where they lose electrons", "the cathode, where they gain electrons", "the anode, where they gain electrons", "the cathode, where they lose electrons"], "a": 0, "e": "Negative ions (anions) are attracted to the positive anode, where they lose electrons (oxidation)."}, {"t": "Electrolysis and molten electrolytes", "q": "What are the products when molten zinc chloride is electrolysed using inert electrodes?", "o": ["zinc at the cathode and chlorine at the anode", "chlorine at the cathode and zinc at the anode", "hydrogen at the cathode and chlorine at the anode", "zinc at the cathode and oxygen at the anode"], "a": 0, "e": "Zn<sup>2+</sup> ions gain electrons at the cathode to form zinc; Cl<sup>−</sup> ions lose electrons at the anode to form chlorine."}, {"t": "Electrolysis and molten electrolytes", "q": "Which is the half-equation at the cathode when molten lead(II) bromide is electrolysed?", "o": ["Pb<sup>2+</sup> + 2e<sup>−</sup> → Pb", "Pb → Pb<sup>2+</sup> + 2e<sup>−</sup>", "2Br<sup>−</sup> → Br<sub>2</sub> + 2e<sup>−</sup>", "Pb<sup>2+</sup> → Pb + 2e<sup>−</sup>"], "a": 0, "e": "Lead ions gain two electrons: Pb<sup>2+</sup> + 2e<sup>−</sup> → Pb. Electrons are on the left for a reduction."}, {"t": "Electrolysis and molten electrolytes", "q": "Which is the half-equation at the anode when molten sodium chloride is electrolysed?", "o": ["2Cl<sup>−</sup> → Cl<sub>2</sub> + 2e<sup>−</sup>", "Cl<sub>2</sub> + 2e<sup>−</sup> → 2Cl<sup>−</sup>", "Na<sup>+</sup> + e<sup>−</sup> → Na", "Cl<sup>−</sup> + e<sup>−</sup> → Cl"], "a": 0, "e": "Chloride ions lose electrons: 2Cl<sup>−</sup> → Cl<sub>2</sub> + 2e<sup>−</sup>. This is oxidation."}, {"t": "Electrolysis and molten electrolytes", "q": "Reduction happens at the cathode because:", "o": ["positive ions gain electrons there", "negative ions lose electrons there", "positive ions lose electrons there", "atoms gain protons there"], "a": 0, "e": "Reduction is gain of electrons. Positive ions (cations) gain electrons at the cathode."}, {"t": "Aqueous solutions and electrodes", "q": "Dilute sulfuric acid is electrolysed using inert electrodes. What is the ratio of the volume of hydrogen to the volume of oxygen collected?", "o": ["2 : 1", "1 : 2", "1 : 1", "4 : 1"], "a": 0, "e": "Water is split: 2H<sub>2</sub>O → 2H<sub>2</sub> + O<sub>2</sub>, so twice as much hydrogen as oxygen."}, {"t": "Aqueous solutions and electrodes", "q": "Which solution is left after the electrolysis of concentrated aqueous sodium chloride?", "o": ["sodium hydroxide", "hydrochloric acid", "sodium oxide", "sodium chlorate only"], "a": 0, "e": "Hydrogen and chlorine are removed, leaving Na<sup>+</sup> and OH<sup>−</sup> ions: sodium hydroxide solution."}, {"t": "Aqueous solutions and electrodes", "q": "What is the test for chlorine gas?", "o": ["It bleaches damp litmus paper", "It relights a glowing splint", "It makes a lighted splint pop", "It turns limewater milky"], "a": 0, "e": "Chlorine turns damp blue litmus red and then bleaches it white."}, {"t": "Aqueous solutions and electrodes", "q": "What is the test for oxygen gas?", "o": ["It relights a glowing splint", "It bleaches damp litmus paper", "It makes a lighted splint pop", "It turns limewater milky"], "a": 0, "e": "Oxygen relights a glowing splint."}, {"t": "Aqueous solutions and electrodes", "q": "Aqueous copper(II) sulfate is electrolysed using inert (graphite) electrodes. What forms at each electrode?", "o": ["cathode: copper; anode: oxygen", "cathode: hydrogen; anode: oxygen", "cathode: copper; anode: sulfur", "cathode: oxygen; anode: copper"], "a": 0, "e": "Copper is less reactive than hydrogen, so Cu<sup>2+</sup> is discharged at the cathode. OH<sup>−</sup> ions are discharged at the anode, giving oxygen."}, {"t": "Aqueous solutions and electrodes", "q": "Why is copper formed at the cathode instead of hydrogen when aqueous copper(II) sulfate is electrolysed?", "o": ["Copper is less reactive than hydrogen", "Copper is more reactive than hydrogen", "There are no hydrogen ions present", "Hydrogen is a metal"], "a": 0, "e": "The less reactive element is discharged at the cathode. Copper is below hydrogen in the reactivity series."}, {"t": "Aqueous solutions and electrodes", "q": "Aqueous copper(II) sulfate is electrolysed using copper electrodes. What happens?", "o": ["The anode dissolves, the cathode gains copper and the blue colour stays the same", "Oxygen forms at the anode and the blue colour fades", "The cathode dissolves and the anode gains copper", "Hydrogen forms at the cathode and the solution turns colourless"], "a": 0, "e": "Cu → Cu<sup>2+</sup> + 2e<sup>−</sup> at the anode replaces the Cu<sup>2+</sup> discharged at the cathode, so the colour does not change."}, {"t": "Aqueous solutions and electrodes", "q": "Aqueous silver nitrate is electrolysed using inert electrodes. What forms at the cathode?", "o": ["silver", "hydrogen", "nitrogen", "oxygen"], "a": 0, "e": "Silver is much less reactive than hydrogen, so Ag<sup>+</sup> ions gain electrons: Ag<sup>+</sup> + e<sup>−</sup> → Ag."}, {"t": "Applications and fuel cells", "q": "A metal key is to be electroplated with nickel. The key is made the:", "o": ["cathode", "anode", "electrolyte", "salt bridge"], "a": 0, "e": "The object to be plated is the cathode, where metal ions gain electrons. The anode is the plating metal."}, {"t": "Applications and fuel cells", "q": "Give a reason for electroplating a steel object with chromium.", "o": ["To protect it from corrosion and improve its appearance", "To make it magnetic", "To make it dissolve in water", "To lower its melting point"], "a": 0, "e": "Chromium plating protects steel from rusting and gives a shiny surface."}, {"t": "Applications and fuel cells", "q": "Copper is purified by electrolysis. Which arrangement is correct?", "o": ["impure copper anode, pure copper cathode, copper(II) sulfate electrolyte", "pure copper anode, impure copper cathode, copper(II) sulfate electrolyte", "impure copper cathode, graphite anode, sodium chloride electrolyte", "pure copper anode, graphite cathode, water electrolyte"], "a": 0, "e": "Copper dissolves from the impure anode and pure copper builds up on the cathode. Impurities fall as sludge."}, {"t": "Applications and fuel cells", "q": "Why do the graphite anodes burn away when aluminium oxide is electrolysed?", "o": ["Oxygen formed at the anode reacts with the carbon to form carbon dioxide", "Aluminium reacts with carbon", "The cryolite reacts with carbon", "The anodes dissolve in the electrolyte"], "a": 0, "e": "Oxygen is formed at the hot anode and reacts with carbon: C + O<sub>2</sub> → CO<sub>2</sub>. The anodes must be replaced."}, {"t": "Applications and fuel cells", "q": "What is the only product of a hydrogen–oxygen fuel cell?", "o": ["water", "carbon dioxide", "hydrogen peroxide", "ammonia"], "a": 0, "e": "2H<sub>2</sub> + O<sub>2</sub> → 2H<sub>2</sub>O."}, {"t": "Applications and fuel cells", "q": "Which is an advantage of a hydrogen fuel cell over a petrol engine?", "o": ["It does not produce carbon dioxide", "It does not need a fuel", "It gives out no energy", "It is made of metal"], "a": 0, "e": "The only product is water, so there is no CO<sub>2</sub>, carbon monoxide or particulates."}, {"t": "Applications and fuel cells", "q": "Which is the overall equation for a hydrogen–oxygen fuel cell?", "o": ["2H<sub>2</sub> + O<sub>2</sub> → 2H<sub>2</sub>O", "H<sub>2</sub> + O<sub>2</sub> → H<sub>2</sub>O", "2H<sub>2</sub>O → 2H<sub>2</sub> + O<sub>2</sub>", "H<sub>2</sub> + 2O → H<sub>2</sub>O<sub>2</sub>"], "a": 0, "e": "Hydrogen reacts with oxygen to make water: 2H<sub>2</sub> + O<sub>2</sub> → 2H<sub>2</sub>O."}, {"t": "Applications and fuel cells", "q": "Which product of the electrolysis of concentrated aqueous sodium chloride is used to make bleach and to treat water?", "o": ["chlorine", "hydrogen", "sodium", "oxygen"], "a": 0, "e": "Chlorine is used to kill bacteria in water and to make bleach and PVC."}];
+var TOPICS=["Electrolysis and molten electrolytes", "Aqueous solutions and electrodes", "Applications and fuel cells"];
+var BANDS={"Exceeding": {"t": "Excellent understanding of electrochemistry.", "tips": ["Predict the products for an unfamiliar electrolyte and write both half-equations.", "Compare the electrolysis of an aqueous solution with inert and with copper electrodes.", "Challenge: explain how a hydrogen fuel cell compares with a petrol engine."]}, "Secure": {"t": "Good understanding. A few ideas need tightening.", "tips": ["Remember: cathode = reduction (cations gain electrons); anode = oxidation (anions lose electrons).", "Practise half-equations with the correct number of electrons.", "Check your weakest topic below and revise it first."]}, "Developing": {"t": "You know the main ideas. Keep practising.", "tips": ["Use PANIC: Positive Anode, Negative Is Cathode.", "Make a table of products for molten PbBr<sub>2</sub>, NaCl(aq) and CuSO<sub>4</sub>(aq).", "Learn the tests for chlorine, hydrogen and oxygen."]}, "Beginning": {"t": "You are starting to build understanding. Ask for help and try again.", "tips": ["Learn the key words: electrode, electrolyte, anode, cathode, ion.", "Draw and label the electrolysis apparatus from your notes.", "Ask your teacher for a support session and try the quiz again."]}};
+var $=function(id){return document.getElementById(id)};
+var order,idx,score,missed,locked;
+function shuffle(a){for(var i=a.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1));var t=a[i];a[i]=a[j];a[j]=t}return a}
+function chk(){$("go").disabled=!$("nm").value.trim()}
+$("nm").addEventListener("input",chk);
+$("go").onclick=function(){start()};
+$("again").onclick=function(){$("end").classList.add("hidden");start()};
+function start(){order=shuffle(Q.map(function(_,i){return i}));idx=0;score=0;missed=[];$("start").classList.add("hidden");$("play").classList.remove("hidden");show()}
+function show(){
+  locked=false;var n=order[idx],q=Q[n];
+  $("cnt").textContent="Question "+(idx+1)+" of "+Q.length;$("sc").textContent="Score: "+score;
+  $("pg").style.width=(idx/Q.length*100)+"%";
+  $("qt").innerHTML=q.q;$("fb").className="fb hidden";$("next").classList.add("hidden");
+  var idxs=shuffle(q.o.map(function(_,i){return i}));var h="";
+  idxs.forEach(function(oi,k){h+='<button class="opt" data-o="'+oi+'"><span class="k">'+"ABCD"[k]+'</span><span>'+q.o[oi]+'</span></button>'});
+  $("opts").innerHTML=h;
+  Array.prototype.forEach.call(document.querySelectorAll(".opt"),function(b){b.onclick=function(){pick(b)}});
+}
+function pick(b){
+  if(locked)return;locked=true;var n=order[idx],q=Q[n],c=+b.dataset.o,ok=c===q.a;
+  Array.prototype.forEach.call(document.querySelectorAll(".opt"),function(x){x.disabled=true;if(+x.dataset.o===q.a)x.classList.add("right")});
+  if(ok){score++}else{b.classList.add("wrong");missed.push(n)}
+  var fb=$("fb");fb.className="fb "+(ok?"ok":"no");
+  fb.innerHTML="<strong>"+(ok?"Correct.":"Not quite.")+"</strong> "+q.e;
+  $("sc").textContent="Score: "+score;
+  $("next").textContent=idx===Q.length-1?"See my result":"Next question";$("next").classList.remove("hidden");$("next").focus();
+}
+$("next").onclick=function(){idx++;if(idx>=Q.length)finish();else show()};
+function finish(){
+  $("play").classList.add("hidden");$("end").classList.remove("hidden");
+  var pct=Math.round(score/Q.length*100);
+  $("who").textContent=$("nm").value.trim()+($("cl").value.trim()?" · "+$("cl").value.trim():"");
+  $("fin").textContent=score+" / "+Q.length+" ("+pct+"%)";
+  var b=pct>=85?"Exceeding":pct>=65?"Secure":pct>=45?"Developing":"Beginning";
+  var t=BANDS[b].t,tips=BANDS[b].tips.slice();
+  var by={};TOPICS.forEach(function(x){by[x]={s:0,n:0}});
+  Q.forEach(function(q,i){by[q.t].n++});
+  Q.forEach(function(q,i){if(missed.indexOf(i)<0)by[q.t].s++});
+  var worst=null,wp=2;
+  $("tp").innerHTML=TOPICS.map(function(x){var p=by[x].s/by[x].n;if(p<wp){wp=p;worst=x}return'<div class="r"><span class="n">'+x+'</span><span class="b"><i style="width:'+Math.round(p*100)+'%"></i></span><span class="v">'+by[x].s+'/'+by[x].n+'</span></div>'}).join("");
+  if(wp<1)tips.push("Revise first: <strong>"+worst+"</strong>.");
+  $("band").textContent=b;$("bandtxt").textContent=t;
+  $("tips").innerHTML=tips.map(function(x){return"<li>"+x+"</li>"}).join("");
+  var r=$("review");
+  if(!missed.length){r.innerHTML="<p>Full marks. Nothing to review.</p>"}
+  else{r.innerHTML=missed.map(function(n){var q=Q[n];return'<div class="rev"><div><strong>'+q.q+'</strong></div><div style="color:var(--ok)">Answer: '+q.o[q.a]+'</div><div style="color:var(--muted)">'+q.e+'</div></div>'}).join("")}
+  window.scrollTo(0,0);
+}
+</script>
+</body>
+</html>
