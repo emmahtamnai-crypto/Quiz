@@ -1,0 +1,143 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Ionic, Covalent and Metallic Bonding Quiz</title>
+<style>
+:root{--bg:#f5f7fb;--card:#fff;--ink:#1b2333;--muted:#5f6b7f;--line:#d9dfea;--brand:#1f4e8c;--ok:#1b7f4b;--okbg:#e6f5ec;--bad:#b3261e;--badbg:#fbe9e7;--sel:#e8f0fb}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#10151f;--card:#18202e;--ink:#e8edf6;--muted:#9aa7bd;--line:#2b3649;--brand:#7fb0ee;--ok:#5fd394;--okbg:#14301f;--bad:#ff8a80;--badbg:#3a1a18;--sel:#1e2b42}}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.5 system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif}
+.wrap{max-width:720px;margin:0 auto;padding:20px 16px 48px}
+header{text-align:center;margin-bottom:18px}
+header .school{font-size:13px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+h1{font-size:26px;margin:4px 0}
+header p{margin:4px 0;color:var(--muted)}
+.card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:20px;margin-bottom:16px}
+label{display:block;font-weight:600;margin:10px 0 4px}
+input[type=text]{width:100%;padding:11px 12px;border:1px solid var(--line);border-radius:10px;background:var(--bg);color:var(--ink);font-size:16px}
+button{font:inherit;cursor:pointer}
+.btn{background:var(--brand);color:#fff;border:0;border-radius:10px;padding:12px 20px;font-weight:600;min-height:44px}
+.btn.sec{background:transparent;color:var(--brand);border:1px solid var(--brand)}
+.btn:disabled{opacity:.45;cursor:not-allowed}
+.bar{height:8px;background:var(--line);border-radius:6px;overflow:hidden;margin-bottom:14px}
+.bar i{display:block;height:100%;background:var(--brand);width:0;transition:width .3s}
+.meta{display:flex;justify-content:space-between;color:var(--muted);font-size:14px;margin-bottom:8px}
+.q{font-size:19px;font-weight:600;margin:6px 0 14px}
+.opt{display:flex;gap:10px;align-items:flex-start;width:100%;text-align:left;background:var(--card);color:var(--ink);border:1.5px solid var(--line);border-radius:10px;padding:12px 14px;margin-bottom:10px;min-height:48px}
+.opt:hover:not(:disabled){background:var(--sel)}
+.opt .k{font-weight:700;color:var(--brand);min-width:20px}
+.opt.right{background:var(--okbg);border-color:var(--ok)}
+.opt.wrong{background:var(--badbg);border-color:var(--bad)}
+.fb{margin-top:10px;padding:12px 14px;border-radius:10px;border:1px solid var(--line)}
+.fb.ok{background:var(--okbg);border-color:var(--ok)}
+.fb.no{background:var(--badbg);border-color:var(--bad)}
+.score{font-size:46px;font-weight:700;text-align:center;margin:4px 0}
+.band{text-align:center;font-weight:700;color:var(--brand);font-size:20px}
+ul.tips{padding-left:20px}
+.rev{border-top:1px solid var(--line);padding:12px 0}
+.rev:first-child{border-top:0}
+.hidden{display:none}
+.row{display:flex;gap:10px;flex-wrap:wrap}
+sub,sup{line-height:0}
+#tp .r{display:flex;align-items:center;gap:10px;margin:8px 0}#tp .r span.n{flex:0 0 46%}#tp .r .b{flex:1;height:10px;background:var(--line);border-radius:6px;overflow:hidden}#tp .r .b i{display:block;height:100%;background:var(--brand)}#tp .r span.v{min-width:44px;text-align:right;font-weight:600}
+@media print{body{background:#fff;color:#000}.btn,.row{display:none}.card{border:1px solid #999}}
+</style>
+</head>
+<body>
+<div class="wrap">
+<header>
+<div class="school">Providence English Private School</div>
+<h1>Ionic, Covalent and Metallic Bonding Quiz</h1>
+<p>Year 10 IGCSE Chemistry · Miss Emmah M. Tamnai</p>
+</header>
+
+<section id="start" class="card">
+<p>24 multiple-choice questions on ionic, covalent and metallic bonding: 8 on each. You get feedback after every answer and a score for each type of bonding at the end.</p>
+<label for="nm">Name</label><input id="nm" type="text" autocomplete="name">
+<label for="cl">Class</label><input id="cl" type="text" placeholder="e.g. 11A">
+<p style="margin-top:16px"><button class="btn" id="go" disabled>Start quiz</button></p>
+</section>
+
+<section id="play" class="card hidden">
+<div class="meta"><span id="cnt"></span><span id="sc"></span></div>
+<div class="bar"><i id="pg"></i></div>
+<div class="q" id="qt"></div>
+<div id="opts"></div>
+<div id="fb" class="fb hidden" role="status" aria-live="polite"></div>
+<p style="margin-top:14px"><button class="btn hidden" id="next">Next question</button></p>
+</section>
+
+<section id="end" class="hidden">
+<div class="card">
+<div id="who" style="text-align:center;color:var(--muted)"></div>
+<div class="score" id="fin"></div>
+<div class="band" id="band"></div>
+<p id="bandtxt" style="text-align:center;color:var(--muted)"></p>
+<div class="row" style="justify-content:center">
+<button class="btn" id="again">Try again</button>
+<button class="btn sec" onclick="window.print()">Print / save result</button>
+</div>
+</div>
+<div class="card"><h2 style="margin-top:0;font-size:18px">Score by topic</h2><div id="tp"></div></div>
+<div class="card"><h2 style="margin-top:0;font-size:18px">Next steps</h2><ul class="tips" id="tips"></ul></div>
+<div class="card"><h2 style="margin-top:0;font-size:18px">Questions to review</h2><div id="review"></div></div>
+</section>
+</div>
+
+<script>
+var Q=[{"t": "Ionic bonding", "q": "Which pair of elements will form an ionic compound?", "o": ["carbon and hydrogen", "potassium and bromine", "nitrogen and oxygen", "sulfur and chlorine"], "a": 1, "e": "Potassium is a metal and bromine is a non-metal. A metal and a non-metal form an ionic compound."}, {"t": "Ionic bonding", "q": "A magnesium atom (2,8,2) forms an Mg<sup>2+</sup> ion by:", "o": ["gaining two electrons", "losing two electrons", "sharing two electrons", "losing two protons"], "a": 1, "e": "Magnesium loses its two outer electrons to form Mg<sup>2+</sup> (2,8)."}, {"t": "Ionic bonding", "q": "How many electrons are there in an oxide ion, O<sup>2−</sup>? (An oxygen atom has 8 electrons.)", "o": ["6", "8", "10", "2"], "a": 2, "e": "Oxygen gains two electrons, so O<sup>2−</sup> has 8 + 2 = 10 electrons (2,8)."}, {"t": "Ionic bonding", "q": "What is the formula of calcium fluoride? (Ca<sup>2+</sup> and F<sup>−</sup>)", "o": ["CaF", "Ca<sub>2</sub>F", "CaF<sub>2</sub>", "Ca<sub>2</sub>F<sub>2</sub>"], "a": 2, "e": "One Ca<sup>2+</sup> needs two F<sup>−</sup> ions to balance the charge: CaF<sub>2</sub>."}, {"t": "Ionic bonding", "q": "What is the formula of sodium oxide? (Na<sup>+</sup> and O<sup>2−</sup>)", "o": ["NaO", "Na<sub>2</sub>O", "NaO<sub>2</sub>", "Na<sub>2</sub>O<sub>2</sub>"], "a": 1, "e": "Two Na<sup>+</sup> ions (2+) balance one O<sup>2−</sup> ion: Na<sub>2</sub>O."}, {"t": "Ionic bonding", "q": "Why does an ionic compound conduct electricity when dissolved in water but not when solid?", "o": ["The ions are free to move in solution", "Electrons are free to move in solution", "Solid ionic compounds contain no ions", "Water adds electrons to the compound"], "a": 0, "e": "In the solid the ions are fixed in the lattice. When dissolved (or molten) they are free to move and carry charge."}, {"t": "Ionic bonding", "q": "A crystal of an ionic compound is hit with a hammer and shatters. What is the reason?", "o": ["The covalent bonds break", "Layers of ions slide so that ions with the same charge are next to each other and repel", "Delocalised electrons escape", "The molecules separate"], "a": 1, "e": "Ionic crystals are brittle: when a layer shifts, like charges line up and repel, so the crystal splits."}, {"t": "Ionic bonding", "q": "Magnesium oxide has a higher melting point than sodium chloride. Why?", "o": ["It has more molecules", "Mg<sup>2+</sup> and O<sup>2−</sup> have higher charges, so the attraction between the ions is stronger", "It contains covalent bonds", "It has delocalised electrons"], "a": 1, "e": "Ions with larger charges attract each other more strongly, so more energy is needed to melt the lattice."}, {"t": "Covalent bonding", "q": "Which molecule contains only single covalent bonds?", "o": ["CO<sub>2</sub>", "N<sub>2</sub>", "CH<sub>4</sub>", "O<sub>2</sub>"], "a": 2, "e": "CH<sub>4</sub> has four C–H single bonds. CO<sub>2</sub> and O<sub>2</sub> have double bonds and N<sub>2</sub> has a triple bond."}, {"t": "Covalent bonding", "q": "How many electrons are in the outer shell of the carbon atom in methane, CH<sub>4</sub>, when the bonds are counted?", "o": ["4", "6", "8", "10"], "a": 2, "e": "Carbon shares four pairs of electrons, so it has 8 electrons in its outer shell (a full shell)."}, {"t": "Covalent bonding", "q": "How many lone (non-bonding) pairs of electrons are on the nitrogen atom in ammonia, NH<sub>3</sub>?", "o": ["0", "1", "2", "3"], "a": 1, "e": "Nitrogen has 5 outer electrons: 3 are shared with hydrogen atoms and the other 2 form one lone pair."}, {"t": "Covalent bonding", "q": "Which substance has a giant covalent structure?", "o": ["silicon(IV) oxide", "carbon dioxide", "ammonia", "hydrogen chloride"], "a": 0, "e": "Silicon(IV) oxide, SiO<sub>2</sub>, has a giant structure of atoms joined by covalent bonds. The others are simple molecules."}, {"t": "Covalent bonding", "q": "Why does a simple molecular compound, such as hydrogen chloride, not conduct electricity?", "o": ["It has no ions or free electrons to carry charge", "It has delocalised electrons", "It contains positive ions only", "It has a giant lattice"], "a": 0, "e": "Simple molecules are neutral. There are no ions and no delocalised electrons that can move."}, {"t": "Covalent bonding", "q": "How many shared pairs of electrons are there in a molecule of hydrogen chloride, HCl?", "o": ["1", "2", "3", "4"], "a": 0, "e": "H and Cl share one pair of electrons: a single covalent bond."}, {"t": "Covalent bonding", "q": "Which gas has molecules containing a double covalent bond?", "o": ["hydrogen, H<sub>2</sub>", "nitrogen, N<sub>2</sub>", "chlorine, Cl<sub>2</sub>", "oxygen, O<sub>2</sub>"], "a": 3, "e": "Oxygen is O=O: two shared pairs. H<sub>2</sub> and Cl<sub>2</sub> have single bonds and N<sub>2</sub> has a triple bond."}, {"t": "Covalent bonding", "q": "When liquid ethanol boils, what is overcome?", "o": ["the covalent bonds inside the molecules", "the forces between the molecules", "the ionic bonds", "the metallic bonds"], "a": 1, "e": "Boiling separates the molecules by overcoming weak intermolecular forces. The covalent bonds inside each molecule stay intact."}, {"t": "Metallic bonding", "q": "Metallic bonding is the attraction between:", "o": ["positive ions and delocalised electrons", "positive ions and negative ions", "shared pairs of electrons and nuclei", "molecules"], "a": 0, "e": "A lattice of positive metal ions is held together by a ‘sea’ of delocalised electrons."}, {"t": "Metallic bonding", "q": "Why do metals conduct electricity?", "o": ["They contain ions that are free to move", "They contain delocalised electrons that are free to move", "They contain shared pairs of electrons", "They have weak forces between atoms"], "a": 1, "e": "The delocalised electrons can move through the lattice and carry an electric current."}, {"t": "Metallic bonding", "q": "Why can metals be hammered into shape (malleable)?", "o": ["The layers of ions can slide over each other and the bonding is kept", "The metal atoms are joined in molecules", "The ions repel each other", "They have weak bonds between atoms"], "a": 0, "e": "The layers slide while the delocalised electrons still hold the ions together, so the metal does not shatter."}, {"t": "Metallic bonding", "q": "Why are metals good conductors of heat?", "o": ["Delocalised electrons transfer energy through the metal", "Metals contain molecules that carry heat", "Metal ions are free to move", "Metals have no particles"], "a": 0, "e": "The moving delocalised electrons pass energy quickly through the lattice."}, {"t": "Metallic bonding", "q": "Why do most metals have high melting points?", "o": ["There are strong attractions between the positive ions and the delocalised electrons", "There are weak forces between molecules", "The covalent bonds are strong", "The ions are free to move"], "a": 0, "e": "A lot of energy is needed to overcome the strong metallic bonding."}, {"t": "Metallic bonding", "q": "Steel (an alloy) is harder than pure iron. Why?", "o": ["Atoms of other elements are a different size, so the layers cannot slide easily", "Steel has covalent bonds", "Steel has more delocalised electrons", "Steel contains molecules"], "a": 0, "e": "The different-sized atoms disrupt the regular layers, so they are harder to slide over each other."}, {"t": "Metallic bonding", "q": "Magnesium has a higher melting point than sodium. Which is the best reason?", "o": ["Magnesium atoms are heavier", "Mg<sup>2+</sup> ions and two delocalised electrons per atom give stronger metallic bonding than Na<sup>+</sup> and one", "Magnesium has covalent bonds", "Magnesium has more molecules"], "a": 1, "e": "Higher ionic charge and more delocalised electrons mean a stronger attraction, so more energy is needed to melt it."}, {"t": "Metallic bonding", "q": "Which substance conducts electricity when solid and can be hammered into shape?", "o": ["copper", "sodium chloride", "diamond", "sulfur"], "a": 0, "e": "Copper is a metal, so it has delocalised electrons and layers of ions that can slide."}];
+var TOPICS=["Ionic bonding", "Covalent bonding", "Metallic bonding"];
+var BANDS={"Exceeding": {"t": "Excellent understanding of the three types of bonding.", "tips": ["Compare two substances in a six-mark answer, for example NaCl and CO<sub>2</sub>, or MgO and NaCl.", "Link every property to the particles and the strength of the forces between them.", "Challenge: explain why steel is harder than pure iron."]}, "Secure": {"t": "Good understanding. A few ideas need tightening.", "tips": ["Finish every explanation with the reason: the type of particles and the forces between them.", "Practise dot-and-cross diagrams for ionic and covalent compounds.", "Check your weakest bonding type below and revise it first."]}, "Developing": {"t": "You know the main ideas. Keep practising.", "tips": ["Make a table: ionic, covalent, metallic. Add particles, melting point and conductivity.", "Practise writing ionic formulae using the charges of the ions.", "Learn the key words: ion, lattice, shared pair, delocalised electrons."]}, "Beginning": {"t": "You are starting to build understanding. Ask for help and try again.", "tips": ["Revise what each type of bonding is: transfer, sharing or delocalised electrons.", "Use the learning sheet and the key-word cards.", "Ask your teacher for a support session and try the quiz again."]}};
+var $=function(id){return document.getElementById(id)};
+var order,idx,score,missed,locked;
+function shuffle(a){for(var i=a.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1));var t=a[i];a[i]=a[j];a[j]=t}return a}
+function chk(){$("go").disabled=!$("nm").value.trim()}
+$("nm").addEventListener("input",chk);
+$("go").onclick=function(){start()};
+$("again").onclick=function(){$("end").classList.add("hidden");start()};
+function start(){order=shuffle(Q.map(function(_,i){return i}));idx=0;score=0;missed=[];$("start").classList.add("hidden");$("play").classList.remove("hidden");show()}
+function show(){
+  locked=false;var n=order[idx],q=Q[n];
+  $("cnt").textContent="Question "+(idx+1)+" of "+Q.length;$("sc").textContent="Score: "+score;
+  $("pg").style.width=(idx/Q.length*100)+"%";
+  $("qt").innerHTML=q.q;$("fb").className="fb hidden";$("next").classList.add("hidden");
+  var idxs=shuffle(q.o.map(function(_,i){return i}));var h="";
+  idxs.forEach(function(oi,k){h+='<button class="opt" data-o="'+oi+'"><span class="k">'+"ABCD"[k]+'</span><span>'+q.o[oi]+'</span></button>'});
+  $("opts").innerHTML=h;
+  Array.prototype.forEach.call(document.querySelectorAll(".opt"),function(b){b.onclick=function(){pick(b)}});
+}
+function pick(b){
+  if(locked)return;locked=true;var n=order[idx],q=Q[n],c=+b.dataset.o,ok=c===q.a;
+  Array.prototype.forEach.call(document.querySelectorAll(".opt"),function(x){x.disabled=true;if(+x.dataset.o===q.a)x.classList.add("right")});
+  if(ok){score++}else{b.classList.add("wrong");missed.push(n)}
+  var fb=$("fb");fb.className="fb "+(ok?"ok":"no");
+  fb.innerHTML="<strong>"+(ok?"Correct.":"Not quite.")+"</strong> "+q.e;
+  $("sc").textContent="Score: "+score;
+  $("next").textContent=idx===Q.length-1?"See my result":"Next question";$("next").classList.remove("hidden");$("next").focus();
+}
+$("next").onclick=function(){idx++;if(idx>=Q.length)finish();else show()};
+function finish(){
+  $("play").classList.add("hidden");$("end").classList.remove("hidden");
+  var pct=Math.round(score/Q.length*100);
+  $("who").textContent=$("nm").value.trim()+($("cl").value.trim()?" · "+$("cl").value.trim():"");
+  $("fin").textContent=score+" / "+Q.length+" ("+pct+"%)";
+  var b=pct>=85?"Exceeding":pct>=65?"Secure":pct>=45?"Developing":"Beginning";
+  var t=BANDS[b].t,tips=BANDS[b].tips.slice();
+  var by={};TOPICS.forEach(function(x){by[x]={s:0,n:0}});
+  Q.forEach(function(q,i){by[q.t].n++});
+  Q.forEach(function(q,i){if(missed.indexOf(i)<0)by[q.t].s++});
+  var worst=null,wp=2;
+  $("tp").innerHTML=TOPICS.map(function(x){var p=by[x].s/by[x].n;if(p<wp){wp=p;worst=x}return'<div class="r"><span class="n">'+x+'</span><span class="b"><i style="width:'+Math.round(p*100)+'%"></i></span><span class="v">'+by[x].s+'/'+by[x].n+'</span></div>'}).join("");
+  if(wp<1)tips.push("Revise first: <strong>"+worst+"</strong>.");
+  $("band").textContent=b;$("bandtxt").textContent=t;
+  $("tips").innerHTML=tips.map(function(x){return"<li>"+x+"</li>"}).join("");
+  var r=$("review");
+  if(!missed.length){r.innerHTML="<p>Full marks. Nothing to review.</p>"}
+  else{r.innerHTML=missed.map(function(n){var q=Q[n];return'<div class="rev"><div><strong>'+q.q+'</strong></div><div style="color:var(--ok)">Answer: '+q.o[q.a]+'</div><div style="color:var(--muted)">'+q.e+'</div></div>'}).join("")}
+  window.scrollTo(0,0);
+}
+</script>
+</body>
+</html>
