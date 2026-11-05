@@ -1,0 +1,143 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Turning Forces Quiz</title>
+<style>
+:root{--bg:#f5f7fb;--card:#fff;--ink:#1b2333;--muted:#5f6b7f;--line:#d9dfea;--brand:#1f4e8c;--ok:#1b7f4b;--okbg:#e6f5ec;--bad:#b3261e;--badbg:#fbe9e7;--sel:#e8f0fb}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#10151f;--card:#18202e;--ink:#e8edf6;--muted:#9aa7bd;--line:#2b3649;--brand:#7fb0ee;--ok:#5fd394;--okbg:#14301f;--bad:#ff8a80;--badbg:#3a1a18;--sel:#1e2b42}}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.5 system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif}
+.wrap{max-width:720px;margin:0 auto;padding:20px 16px 48px}
+header{text-align:center;margin-bottom:18px}
+header .school{font-size:13px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+h1{font-size:26px;margin:4px 0}
+header p{margin:4px 0;color:var(--muted)}
+.card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:20px;margin-bottom:16px}
+label{display:block;font-weight:600;margin:10px 0 4px}
+input[type=text]{width:100%;padding:11px 12px;border:1px solid var(--line);border-radius:10px;background:var(--bg);color:var(--ink);font-size:16px}
+button{font:inherit;cursor:pointer}
+.btn{background:var(--brand);color:#fff;border:0;border-radius:10px;padding:12px 20px;font-weight:600;min-height:44px}
+.btn.sec{background:transparent;color:var(--brand);border:1px solid var(--brand)}
+.btn:disabled{opacity:.45;cursor:not-allowed}
+.bar{height:8px;background:var(--line);border-radius:6px;overflow:hidden;margin-bottom:14px}
+.bar i{display:block;height:100%;background:var(--brand);width:0;transition:width .3s}
+.meta{display:flex;justify-content:space-between;color:var(--muted);font-size:14px;margin-bottom:8px}
+.q{font-size:19px;font-weight:600;margin:6px 0 14px}
+.opt{display:flex;gap:10px;align-items:flex-start;width:100%;text-align:left;background:var(--card);color:var(--ink);border:1.5px solid var(--line);border-radius:10px;padding:12px 14px;margin-bottom:10px;min-height:48px}
+.opt:hover:not(:disabled){background:var(--sel)}
+.opt .k{font-weight:700;color:var(--brand);min-width:20px}
+.opt.right{background:var(--okbg);border-color:var(--ok)}
+.opt.wrong{background:var(--badbg);border-color:var(--bad)}
+.fb{margin-top:10px;padding:12px 14px;border-radius:10px;border:1px solid var(--line)}
+.fb.ok{background:var(--okbg);border-color:var(--ok)}
+.fb.no{background:var(--badbg);border-color:var(--bad)}
+.score{font-size:46px;font-weight:700;text-align:center;margin:4px 0}
+.band{text-align:center;font-weight:700;color:var(--brand);font-size:20px}
+ul.tips{padding-left:20px}
+.rev{border-top:1px solid var(--line);padding:12px 0}
+.rev:first-child{border-top:0}
+.hidden{display:none}
+.row{display:flex;gap:10px;flex-wrap:wrap}
+sub,sup{line-height:0}
+#tp .r{display:flex;align-items:center;gap:10px;margin:8px 0}#tp .r span.n{flex:0 0 46%}#tp .r .b{flex:1;height:10px;background:var(--line);border-radius:6px;overflow:hidden}#tp .r .b i{display:block;height:100%;background:var(--brand)}#tp .r span.v{min-width:44px;text-align:right;font-weight:600}
+@media print{body{background:#fff;color:#000}.btn,.row{display:none}.card{border:1px solid #999}}
+</style>
+</head>
+<body>
+<div class="wrap">
+<header>
+<div class="school">Providence English Private School</div>
+<h1>Turning Forces Quiz</h1>
+<p>Year 8 Science · Miss Emmah M. Tamnai</p>
+</header>
+
+<section id="start" class="card">
+<p>24 multiple-choice questions on turning forces, pivots, levers and moments. You get feedback after every answer and a score for each topic at the end.</p>
+<label for="nm">Name</label><input id="nm" type="text" autocomplete="name">
+<label for="cl">Class</label><input id="cl" type="text" placeholder="e.g. 11A">
+<p style="margin-top:16px"><button class="btn" id="go" disabled>Start quiz</button></p>
+</section>
+
+<section id="play" class="card hidden">
+<div class="meta"><span id="cnt"></span><span id="sc"></span></div>
+<div class="bar"><i id="pg"></i></div>
+<div class="q" id="qt"></div>
+<div id="opts"></div>
+<div id="fb" class="fb hidden" role="status" aria-live="polite"></div>
+<p style="margin-top:14px"><button class="btn hidden" id="next">Next question</button></p>
+</section>
+
+<section id="end" class="hidden">
+<div class="card">
+<div id="who" style="text-align:center;color:var(--muted)"></div>
+<div class="score" id="fin"></div>
+<div class="band" id="band"></div>
+<p id="bandtxt" style="text-align:center;color:var(--muted)"></p>
+<div class="row" style="justify-content:center">
+<button class="btn" id="again">Try again</button>
+<button class="btn sec" onclick="window.print()">Print / save result</button>
+</div>
+</div>
+<div class="card"><h2 style="margin-top:0;font-size:18px">Score by topic</h2><div id="tp"></div></div>
+<div class="card"><h2 style="margin-top:0;font-size:18px">Next steps</h2><ul class="tips" id="tips"></ul></div>
+<div class="card"><h2 style="margin-top:0;font-size:18px">Questions to review</h2><div id="review"></div></div>
+</section>
+</div>
+
+<script>
+var Q=[{"t": "Turning forces and pivots", "q": "What is a pivot?", "o": ["The fixed point an object turns around", "The longest part of a lever", "The weight of an object", "The force that makes an object turn"], "a": 0, "e": "A pivot (fulcrum) is the point about which an object turns."}, {"t": "Turning forces and pivots", "q": "What do we call the turning effect of a force?", "o": ["Friction", "Pressure", "Moment", "Momentum"], "a": 2, "e": "The turning effect of a force about a pivot is called its moment."}, {"t": "Turning forces and pivots", "q": "You push a door at the handle, far from the hinges. Where is the pivot?", "o": ["At the handle", "In the middle of the door", "At your hand", "At the hinges"], "a": 3, "e": "The door turns about its hinges, so the hinges are the pivot."}, {"t": "Turning forces and pivots", "q": "Which push opens a heavy door most easily?", "o": ["A smaller force close to the hinges", "The same force far from the hinges", "A force pushing along the hinge line", "The same force close to the hinges"], "a": 1, "e": "A bigger distance from the pivot gives a bigger turning effect for the same force."}, {"t": "Turning forces and pivots", "q": "Which direction does a force turn an object if it pushes the right side down?", "o": ["Clockwise", "It does not turn", "Anticlockwise", "Upwards"], "a": 0, "e": "Pushing the right side of a seesaw down turns it clockwise about the pivot."}, {"t": "Turning forces and pivots", "q": "Why is a spanner with a long handle better for a tight nut?", "o": ["The nut becomes lighter", "The longer distance gives a bigger moment", "The longer handle gives a bigger force", "The handle has less weight"], "a": 1, "e": "A longer handle increases the distance from the pivot, so the same force has a bigger turning effect."}, {"t": "Turning forces and pivots", "q": "Which two things decide the size of a moment?", "o": ["Force and time", "Mass and speed", "Force and distance from the pivot", "Weight and colour"], "a": 2, "e": "Moment depends on the size of the force and its distance from the pivot."}, {"t": "Turning forces and pivots", "q": "A force acts through the pivot. What is its turning effect?", "o": ["Equal to the force", "Equal to the distance", "Zero", "The largest possible"], "a": 2, "e": "The distance from the pivot is zero, so the moment is zero."}, {"t": "Levers and everyday machines", "q": "What is a lever?", "o": ["A rigid bar that turns about a pivot", "A type of spring", "A machine with no pivot", "A type of friction"], "a": 0, "e": "A lever is a rigid bar that turns about a pivot to make a job easier."}, {"t": "Levers and everyday machines", "q": "Which of these is an example of a lever?", "o": ["A magnet", "A ball", "A balloon", "A wheelbarrow"], "a": 3, "e": "A wheelbarrow is a lever: the wheel is the pivot and the load is lifted at the other end."}, {"t": "Levers and everyday machines", "q": "In a pair of scissors, where is the pivot?", "o": ["At the handles", "At the tips", "At the paper", "At the screw joining the two blades"], "a": 3, "e": "The two blades turn around the joining screw."}, {"t": "Levers and everyday machines", "q": "Why does a crowbar help lift a heavy rock?", "o": ["It makes the rock lighter", "It removes gravity", "A small force far from the pivot balances a large load near the pivot", "It has no pivot"], "a": 2, "e": "A longer distance from the pivot lets a small force give a large moment."}, {"t": "Levers and everyday machines", "q": "A seesaw is balanced. A heavier child sits on one side. What should the lighter child do?", "o": ["Sit closer to the pivot", "Lean backwards", "Sit further from the pivot", "Sit on the pivot"], "a": 2, "e": "A lighter force needs a larger distance to make an equal moment."}, {"t": "Levers and everyday machines", "q": "Which is NOT a lever?", "o": ["A claw hammer", "A rolling ball on flat ground", "A bottle opener", "A pair of pliers"], "a": 1, "e": "The ball has no pivot and is not a bar turning about a point."}, {"t": "Levers and everyday machines", "q": "A tap handle is wide and long. Why?", "o": ["It adds weight", "A longer handle makes it easier to turn the tap", "It looks better", "The tap needs more water"], "a": 1, "e": "Greater distance from the pivot means a bigger moment for the same force."}, {"t": "Levers and everyday machines", "q": "Which tool uses a lever to remove a nail?", "o": ["Pencil", "Thermometer", "Ruler", "Claw hammer"], "a": 3, "e": "The claw hammer turns about the head, so a small force on the handle gives a large force on the nail."}, {"t": "Moments and balance", "q": "Which equation gives the moment of a force?", "o": ["moment = force × distance from the pivot", "moment = mass × speed", "moment = force + distance", "moment = force ÷ distance"], "a": 0, "e": "Moment = force × perpendicular distance from the pivot."}, {"t": "Moments and balance", "q": "A force of 20 N acts 0.5 m from a pivot. What is the moment?", "o": ["10 N m", "20.5 N m", "40 N m", "0.025 N m"], "a": 0, "e": "20 × 0.5 = 10 N m."}, {"t": "Moments and balance", "q": "A force of 50 N acts 30 cm from a pivot. What is the moment?", "o": ["80 N cm", "15 N cm", "1500 N cm", "0.6 N cm"], "a": 2, "e": "50 × 30 = 1500 N cm."}, {"t": "Moments and balance", "q": "A 6 N force is 4 cm to the left of a pivot. An 8 N force is 3 cm to the right. What happens?", "o": ["It moves upwards", "It turns anticlockwise", "It turns clockwise", "It balances"], "a": 3, "e": "Left: 6 × 4 = 24 N cm. Right: 8 × 3 = 24 N cm. The moments are equal, so it balances."}, {"t": "Moments and balance", "q": "A 15 N force turns clockwise 2 m from a pivot. A 10 N force turns anticlockwise 2 m from the pivot. What happens?", "o": ["It turns clockwise", "It turns anticlockwise", "It does not move", "It balances"], "a": 0, "e": "Clockwise: 15 × 2 = 30 N m. Anticlockwise: 10 × 2 = 20 N m. The larger moment wins, so it turns clockwise."}, {"t": "Moments and balance", "q": "A 300 N child sits 2 m from the pivot of a seesaw. A 400 N child balances it on the other side. How far is the second child from the pivot?", "o": ["2.7 m", "1.5 m", "0.5 m", "2.0 m"], "a": 1, "e": "300 × 2 = 600 N m. 600 ÷ 400 = 1.5 m."}, {"t": "Moments and balance", "q": "A moment of 12 N m is made by a 4 N force. How far from the pivot does it act?", "o": ["3 m", "48 m", "0.33 m", "8 m"], "a": 0, "e": "distance = moment ÷ force = 12 ÷ 4 = 3 m."}, {"t": "Moments and balance", "q": "When an object is balanced, what is true about the moments?", "o": ["Clockwise moment is bigger", "There are no moments", "Anticlockwise moment is bigger", "Total clockwise moment = total anticlockwise moment"], "a": 3, "e": "This is the principle of moments: the object does not turn when the moments are equal."}];
+var TOPICS=["Turning forces and pivots", "Levers and everyday machines", "Moments and balance"];
+var BANDS={"Exceeding": {"t": "Excellent understanding of turning forces and moments.", "tips": ["Explain why a longer lever needs less force.", "Try problems with more than two forces on a beam."]}, "Secure": {"t": "Good understanding. A few ideas need tightening.", "tips": ["Write moment = force × distance and check the units.", "Compare clockwise and anticlockwise moments before deciding."]}, "Developing": {"t": "You know the main ideas. Keep practising.", "tips": ["Learn: moment = force × distance from the pivot.", "Draw the pivot first on every diagram."]}, "Beginning": {"t": "You are starting to build understanding. Ask for help and try again.", "tips": ["Revise what a pivot and a lever are.", "Use your learning sheet and try a seesaw or a door as an example."]}};
+var $=function(id){return document.getElementById(id)};
+var order,idx,score,missed,locked;
+function shuffle(a){for(var i=a.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1));var t=a[i];a[i]=a[j];a[j]=t}return a}
+function chk(){$("go").disabled=!$("nm").value.trim()}
+$("nm").addEventListener("input",chk);
+$("go").onclick=function(){start()};
+$("again").onclick=function(){$("end").classList.add("hidden");start()};
+function start(){order=shuffle(Q.map(function(_,i){return i}));idx=0;score=0;missed=[];$("start").classList.add("hidden");$("play").classList.remove("hidden");show()}
+function show(){
+  locked=false;var n=order[idx],q=Q[n];
+  $("cnt").textContent="Question "+(idx+1)+" of "+Q.length;$("sc").textContent="Score: "+score;
+  $("pg").style.width=(idx/Q.length*100)+"%";
+  $("qt").innerHTML=q.q;$("fb").className="fb hidden";$("next").classList.add("hidden");
+  var idxs=shuffle(q.o.map(function(_,i){return i}));var h="";
+  idxs.forEach(function(oi,k){h+='<button class="opt" data-o="'+oi+'"><span class="k">'+"ABCD"[k]+'</span><span>'+q.o[oi]+'</span></button>'});
+  $("opts").innerHTML=h;
+  Array.prototype.forEach.call(document.querySelectorAll(".opt"),function(b){b.onclick=function(){pick(b)}});
+}
+function pick(b){
+  if(locked)return;locked=true;var n=order[idx],q=Q[n],c=+b.dataset.o,ok=c===q.a;
+  Array.prototype.forEach.call(document.querySelectorAll(".opt"),function(x){x.disabled=true;if(+x.dataset.o===q.a)x.classList.add("right")});
+  if(ok){score++}else{b.classList.add("wrong");missed.push(n)}
+  var fb=$("fb");fb.className="fb "+(ok?"ok":"no");
+  fb.innerHTML="<strong>"+(ok?"Correct.":"Not quite.")+"</strong> "+q.e;
+  $("sc").textContent="Score: "+score;
+  $("next").textContent=idx===Q.length-1?"See my result":"Next question";$("next").classList.remove("hidden");$("next").focus();
+}
+$("next").onclick=function(){idx++;if(idx>=Q.length)finish();else show()};
+function finish(){
+  $("play").classList.add("hidden");$("end").classList.remove("hidden");
+  var pct=Math.round(score/Q.length*100);
+  $("who").textContent=$("nm").value.trim()+($("cl").value.trim()?" · "+$("cl").value.trim():"");
+  $("fin").textContent=score+" / "+Q.length+" ("+pct+"%)";
+  var b=pct>=85?"Exceeding":pct>=65?"Secure":pct>=45?"Developing":"Beginning";
+  var t=BANDS[b].t,tips=BANDS[b].tips.slice();
+  var by={};TOPICS.forEach(function(x){by[x]={s:0,n:0}});
+  Q.forEach(function(q,i){by[q.t].n++});
+  Q.forEach(function(q,i){if(missed.indexOf(i)<0)by[q.t].s++});
+  var worst=null,wp=2;
+  $("tp").innerHTML=TOPICS.map(function(x){var p=by[x].s/by[x].n;if(p<wp){wp=p;worst=x}return'<div class="r"><span class="n">'+x+'</span><span class="b"><i style="width:'+Math.round(p*100)+'%"></i></span><span class="v">'+by[x].s+'/'+by[x].n+'</span></div>'}).join("");
+  if(wp<1)tips.push("Revise first: <strong>"+worst+"</strong>.");
+  $("band").textContent=b;$("bandtxt").textContent=t;
+  $("tips").innerHTML=tips.map(function(x){return"<li>"+x+"</li>"}).join("");
+  var r=$("review");
+  if(!missed.length){r.innerHTML="<p>Full marks. Nothing to review.</p>"}
+  else{r.innerHTML=missed.map(function(n){var q=Q[n];return'<div class="rev"><div><strong>'+q.q+'</strong></div><div style="color:var(--ok)">Answer: '+q.o[q.a]+'</div><div style="color:var(--muted)">'+q.e+'</div></div>'}).join("")}
+  window.scrollTo(0,0);
+}
+</script>
+</body>
+</html>
