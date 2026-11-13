@@ -1,0 +1,143 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Preparation of Salts: Soluble and Insoluble</title>
+<style>
+:root{--bg:#f5f7fb;--card:#fff;--ink:#1b2333;--muted:#5f6b7f;--line:#d9dfea;--brand:#1f4e8c;--ok:#1b7f4b;--okbg:#e6f5ec;--bad:#b3261e;--badbg:#fbe9e7;--sel:#e8f0fb}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#10151f;--card:#18202e;--ink:#e8edf6;--muted:#9aa7bd;--line:#2b3649;--brand:#7fb0ee;--ok:#5fd394;--okbg:#14301f;--bad:#ff8a80;--badbg:#3a1a18;--sel:#1e2b42}}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.5 system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif}
+.wrap{max-width:720px;margin:0 auto;padding:20px 16px 48px}
+header{text-align:center;margin-bottom:18px}
+header .school{font-size:13px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+h1{font-size:26px;margin:4px 0}
+header p{margin:4px 0;color:var(--muted)}
+.card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:20px;margin-bottom:16px}
+label{display:block;font-weight:600;margin:10px 0 4px}
+input[type=text]{width:100%;padding:11px 12px;border:1px solid var(--line);border-radius:10px;background:var(--bg);color:var(--ink);font-size:16px}
+button{font:inherit;cursor:pointer}
+.btn{background:var(--brand);color:#fff;border:0;border-radius:10px;padding:12px 20px;font-weight:600;min-height:44px}
+.btn.sec{background:transparent;color:var(--brand);border:1px solid var(--brand)}
+.btn:disabled{opacity:.45;cursor:not-allowed}
+.bar{height:8px;background:var(--line);border-radius:6px;overflow:hidden;margin-bottom:14px}
+.bar i{display:block;height:100%;background:var(--brand);width:0;transition:width .3s}
+.meta{display:flex;justify-content:space-between;color:var(--muted);font-size:14px;margin-bottom:8px}
+.q{font-size:19px;font-weight:600;margin:6px 0 14px}
+.opt{display:flex;gap:10px;align-items:flex-start;width:100%;text-align:left;background:var(--card);color:var(--ink);border:1.5px solid var(--line);border-radius:10px;padding:12px 14px;margin-bottom:10px;min-height:48px}
+.opt:hover:not(:disabled){background:var(--sel)}
+.opt .k{font-weight:700;color:var(--brand);min-width:20px}
+.opt.right{background:var(--okbg);border-color:var(--ok)}
+.opt.wrong{background:var(--badbg);border-color:var(--bad)}
+.fb{margin-top:10px;padding:12px 14px;border-radius:10px;border:1px solid var(--line)}
+.fb.ok{background:var(--okbg);border-color:var(--ok)}
+.fb.no{background:var(--badbg);border-color:var(--bad)}
+.score{font-size:46px;font-weight:700;text-align:center;margin:4px 0}
+.band{text-align:center;font-weight:700;color:var(--brand);font-size:20px}
+ul.tips{padding-left:20px}
+.rev{border-top:1px solid var(--line);padding:12px 0}
+.rev:first-child{border-top:0}
+.hidden{display:none}
+.row{display:flex;gap:10px;flex-wrap:wrap}
+sub,sup{line-height:0}
+#tp .r{display:flex;align-items:center;gap:10px;margin:8px 0}#tp .r span.n{flex:0 0 46%}#tp .r .b{flex:1;height:10px;background:var(--line);border-radius:6px;overflow:hidden}#tp .r .b i{display:block;height:100%;background:var(--brand)}#tp .r span.v{min-width:44px;text-align:right;font-weight:600}
+@media print{body{background:#fff;color:#000}.btn,.row{display:none}.card{border:1px solid #999}}
+</style>
+</head>
+<body>
+<div class="wrap">
+<header>
+<div class="school">Providence English Private School</div>
+<h1>Preparation of Salts: Soluble and Insoluble</h1>
+<p>Year 10 IGCSE Chemistry · Miss Emmah M. Tamnai</p>
+</header>
+
+<section id="start" class="card">
+<p>23 questions on the solubility rules, making soluble salts and making insoluble salts. You get feedback after every answer and a score for each topic at the end.</p>
+<label for="nm">Name</label><input id="nm" type="text" autocomplete="name">
+<label for="cl">Class</label><input id="cl" type="text" placeholder="e.g. 11A">
+<p style="margin-top:16px"><button class="btn" id="go" disabled>Start quiz</button></p>
+</section>
+
+<section id="play" class="card hidden">
+<div class="meta"><span id="cnt"></span><span id="sc"></span></div>
+<div class="bar"><i id="pg"></i></div>
+<div class="q" id="qt"></div>
+<div id="opts"></div>
+<div id="fb" class="fb hidden" role="status" aria-live="polite"></div>
+<p style="margin-top:14px"><button class="btn hidden" id="next">Next question</button></p>
+</section>
+
+<section id="end" class="hidden">
+<div class="card">
+<div id="who" style="text-align:center;color:var(--muted)"></div>
+<div class="score" id="fin"></div>
+<div class="band" id="band"></div>
+<p id="bandtxt" style="text-align:center;color:var(--muted)"></p>
+<div class="row" style="justify-content:center">
+<button class="btn" id="again">Try again</button>
+<button class="btn sec" onclick="window.print()">Print / save result</button>
+</div>
+</div>
+<div class="card"><h2 style="margin-top:0;font-size:18px">Score by topic</h2><div id="tp"></div></div>
+<div class="card"><h2 style="margin-top:0;font-size:18px">Next steps</h2><ul class="tips" id="tips"></ul></div>
+<div class="card"><h2 style="margin-top:0;font-size:18px">Questions to review</h2><div id="review"></div></div>
+</section>
+</div>
+
+<script>
+var Q=[{"t": "Solubility rules", "q": "Which of these salts is insoluble in water?", "o": ["copper(II) nitrate", "magnesium chloride", "barium sulfate", "potassium carbonate"], "a": 2, "e": "Sulfates are soluble except barium, calcium and lead sulfate. Nitrates, potassium salts and most chlorides are soluble."}, {"t": "Solubility rules", "q": "Which of these salts is soluble in water?", "o": ["lead(II) nitrate", "calcium carbonate", "silver chloride", "barium sulfate"], "a": 0, "e": "All nitrates are soluble. Silver chloride, barium sulfate and calcium carbonate are insoluble."}, {"t": "Solubility rules", "q": "Which group of salts is always soluble in water?", "o": ["carbonates", "chlorides", "nitrates", "sulfates"], "a": 2, "e": "All nitrates are soluble. Most carbonates are insoluble; some sulfates and chlorides are insoluble (barium sulfate, silver chloride)."}, {"t": "Solubility rules", "q": "Which of these carbonates is insoluble in water?", "o": ["ammonium carbonate", "copper(II) carbonate", "sodium carbonate", "potassium carbonate"], "a": 1, "e": "Carbonates are insoluble except those of sodium, potassium and ammonium."}, {"t": "Solubility rules", "q": "Which hydroxide is soluble in water?", "o": ["sodium hydroxide", "iron(III) hydroxide", "copper(II) hydroxide", "magnesium hydroxide"], "a": 0, "e": "All sodium, potassium and ammonium compounds are soluble. Most other metal hydroxides are insoluble."}, {"t": "Soluble salts", "q": "A student wants to make copper(II) sulfate crystals from copper(II) oxide. Which method is correct?", "o": ["add copper metal to dilute sulfuric acid", "mix aqueous copper(II) chloride with aqueous sodium sulfate", "burn copper in air and dissolve it in water", "add excess copper(II) oxide to warm dilute sulfuric acid, then filter"], "a": 3, "e": "An insoluble base reacts with a dilute acid to give a soluble salt and water: CuO + H<sub>2</sub>SO<sub>4</sub> → CuSO<sub>4</sub> + H<sub>2</sub>O. Copper metal does not react with dilute acid."}, {"t": "Soluble salts", "q": "Why is the insoluble base added in excess when making a soluble salt?", "o": ["to make the salt insoluble", "to make sure all the acid has reacted", "to make the reaction faster", "to make the solution more acidic"], "a": 1, "e": "If the base is in excess, no acid is left, so the salt is pure. The excess solid is then filtered off."}, {"t": "Soluble salts", "q": "How is the excess insoluble solid removed from the salt solution?", "o": ["distillation", "filtration", "evaporation", "chromatography"], "a": 1, "e": "The salt is dissolved in the solution (the filtrate), and the unreacted solid stays in the filter paper."}, {"t": "Soluble salts", "q": "After filtering, how are crystals of the salt obtained from the solution?", "o": ["filter the solution again", "add more acid to the solution", "evaporate some of the water, then leave to cool and crystallise", "boil until the solution is completely dry"], "a": 2, "e": "Heating until the solution is saturated, then cooling slowly, gives large crystals. Heating to dryness can damage hydrated crystals."}, {"t": "Soluble salts", "q": "Why can copper not be used to make copper(II) sulfate by adding it to dilute sulfuric acid?", "o": ["the reaction produces too much gas", "copper is below hydrogen in the reactivity series, so it does not react", "copper sulfate is insoluble", "copper is too reactive"], "a": 1, "e": "Only metals above hydrogen in the reactivity series react with dilute acids. Very reactive metals such as sodium are too dangerous."}, {"t": "Soluble salts", "q": "Which pair of reactants makes zinc sulfate?", "o": ["zinc carbonate and dilute sulfuric acid", "zinc carbonate and dilute hydrochloric acid", "zinc and dilute hydrochloric acid", "zinc oxide and dilute nitric acid"], "a": 0, "e": "The salt takes its name from the acid: sulfuric acid makes sulfates, hydrochloric acid makes chlorides, nitric acid makes nitrates."}, {"t": "Soluble salts", "q": "Zinc carbonate is added to warm dilute sulfuric acid. How do you know when enough has been added?", "o": ["the fizzing stops and some solid remains", "the solution turns blue", "the temperature rises", "all of the solid disappears"], "a": 0, "e": "Carbon dioxide causes the fizzing. When the acid is used up the fizzing stops and the extra solid remains undissolved."}, {"t": "Soluble salts", "q": "Sodium hydroxide and hydrochloric acid are both soluble. Which method makes pure sodium chloride?", "o": ["precipitation", "electrolysis of the mixture", "add excess sodium hydroxide and filter", "titration with an indicator, then repeat without the indicator"], "a": 3, "e": "With two soluble reactants you cannot filter off an excess. A titration finds the exact volumes, and the indicator is left out in the final run so the salt is not contaminated."}, {"t": "Soluble salts", "q": "Which equation is correct for zinc carbonate reacting with dilute sulfuric acid?", "o": ["ZnCO<sub>3</sub> + H<sub>2</sub>SO<sub>4</sub> → ZnSO<sub>4</sub> + H<sub>2</sub>O + CO<sub>2</sub>", "ZnCO<sub>3</sub> + H<sub>2</sub>SO<sub>4</sub> → ZnSO<sub>4</sub> + H<sub>2</sub>", "ZnCO<sub>3</sub> + H<sub>2</sub>SO<sub>4</sub> → ZnSO<sub>4</sub> + H<sub>2</sub>O", "ZnCO<sub>3</sub> + 2H<sub>2</sub>SO<sub>4</sub> → ZnSO<sub>4</sub> + H<sub>2</sub>O + CO<sub>2</sub>"], "a": 0, "e": "Acid + carbonate → salt + water + carbon dioxide. The equation is balanced as written."}, {"t": "Soluble salts", "q": "Which reaction is used to prepare a soluble salt (rather than a precipitate)?", "o": ["lead(II) nitrate + potassium iodide", "barium chloride + sodium sulfate", "magnesium oxide + dilute hydrochloric acid", "silver nitrate + sodium chloride"], "a": 2, "e": "MgO + 2HCl → MgCl<sub>2</sub> + H<sub>2</sub>O. The other three reactions form insoluble precipitates."}, {"t": "Insoluble salts", "q": "Which method is used to make an insoluble salt?", "o": ["titration with an indicator", "mix two soluble salt solutions (precipitation)", "evaporate a saturated solution", "add an insoluble base to an acid"], "a": 1, "e": "An insoluble salt forms as a solid precipitate when the right two soluble solutions are mixed."}, {"t": "Insoluble salts", "q": "Which pair of solutions forms a precipitate of barium sulfate?", "o": ["barium chloride and sodium nitrate", "barium nitrate and sodium chloride", "sodium chloride and potassium sulfate", "barium chloride and sodium sulfate"], "a": 3, "e": "You need a soluble barium salt and a soluble sulfate. BaCl<sub>2</sub> + Na<sub>2</sub>SO<sub>4</sub> → BaSO<sub>4</sub>(s) + 2NaCl."}, {"t": "Insoluble salts", "q": "Which pair of solutions would you mix to make lead(II) iodide?", "o": ["lead(II) chloride and potassium nitrate", "lead(II) sulfate and sodium iodide", "lead(II) nitrate and potassium iodide", "lead(II) carbonate and sodium iodide"], "a": 2, "e": "Both reactants must be soluble. Lead(II) sulfate, chloride and carbonate are insoluble, but lead(II) nitrate and potassium iodide dissolve."}, {"t": "Insoluble salts", "q": "Which is the correct ionic equation for the formation of silver chloride?", "o": ["Ag<sup>+</sup>(aq) + Cl<sup>−</sup>(aq) → AgCl(s)", "Ag<sup>+</sup>(aq) + Cl<sup>−</sup>(aq) → AgCl(aq)", "Ag<sup>−</sup>(aq) + Cl<sup>+</sup>(aq) → AgCl(s)", "AgNO<sub>3</sub> + NaCl → AgCl"], "a": 0, "e": "Silver ions are Ag<sup>+</sup> and chloride ions are Cl<sup>−</sup>. The solid product has the state symbol (s)."}, {"t": "Insoluble salts", "q": "Why does a precipitate form when two solutions are mixed?", "o": ["the acid is neutralised", "the water evaporates", "all mixed solutions form a precipitate", "the ions of an insoluble salt join together and the solid separates out"], "a": 3, "e": "Only a combination of ions that makes an insoluble compound produces a solid. The other ions stay dissolved."}, {"t": "Insoluble salts", "q": "Why is the precipitate washed with distilled water after filtering?", "o": ["to cool the precipitate", "to remove soluble impurities from the solid", "to make the precipitate dissolve", "to make the precipitate more reactive"], "a": 1, "e": "The other product, such as sodium nitrate, is soluble and would contaminate the precipitate. Distilled water washes it away."}, {"t": "Insoluble salts", "q": "Which salt should be made by precipitation?", "o": ["zinc nitrate", "sodium nitrate", "lead(II) sulfate", "copper(II) sulfate"], "a": 2, "e": "Lead(II) sulfate is insoluble, so mix soluble lead(II) nitrate with a soluble sulfate. The other salts are soluble."}, {"t": "Insoluble salts", "q": "How is a dry sample of an insoluble salt obtained after filtering and washing?", "o": ["distil the filtrate", "evaporate the filtrate to dryness", "crystallise it from the solution", "dry it in a warm oven or between filter papers"], "a": 3, "e": "The solid is already separated by filtration. It only needs drying; the filtrate is a solution of the other product."}];
+var TOPICS=["Solubility rules", "Soluble salts", "Insoluble salts"];
+var BANDS={"Exceeding": {"t": "Excellent. You can choose the right method to make any salt.", "tips": ["Try writing balanced equations and ionic equations for each method.", "Plan a full method: reactants, apparatus, steps, and how to get pure dry crystals."]}, "Secure": {"t": "Good. A few details need tightening.", "tips": ["Check the solubility rules before choosing a method.", "Remember each step: excess solid, filter, evaporate, crystallise (soluble) or mix, filter, wash, dry (insoluble)."]}, "Developing": {"t": "You know the main ideas. Keep practising.", "tips": ["Learn the solubility rules: all nitrates, Na, K and ammonium salts are soluble.", "Soluble salt: acid + base or carbonate. Insoluble salt: two soluble solutions."]}, "Beginning": {"t": "You are starting to build understanding. Ask for help and try again.", "tips": ["Revise which salts are soluble and which are insoluble.", "Use your notes to match each method to the type of salt."]}};
+var $=function(id){return document.getElementById(id)};
+var order,idx,score,missed,locked;
+function shuffle(a){for(var i=a.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1));var t=a[i];a[i]=a[j];a[j]=t}return a}
+function chk(){$("go").disabled=!$("nm").value.trim()}
+$("nm").addEventListener("input",chk);
+$("go").onclick=function(){start()};
+$("again").onclick=function(){$("end").classList.add("hidden");start()};
+function start(){order=shuffle(Q.map(function(_,i){return i}));idx=0;score=0;missed=[];$("start").classList.add("hidden");$("play").classList.remove("hidden");show()}
+function show(){
+  locked=false;var n=order[idx],q=Q[n];
+  $("cnt").textContent="Question "+(idx+1)+" of "+Q.length;$("sc").textContent="Score: "+score;
+  $("pg").style.width=(idx/Q.length*100)+"%";
+  $("qt").innerHTML=q.q;$("fb").className="fb hidden";$("next").classList.add("hidden");
+  var idxs=shuffle(q.o.map(function(_,i){return i}));var h="";
+  idxs.forEach(function(oi,k){h+='<button class="opt" data-o="'+oi+'"><span class="k">'+"ABCD"[k]+'</span><span>'+q.o[oi]+'</span></button>'});
+  $("opts").innerHTML=h;
+  Array.prototype.forEach.call(document.querySelectorAll(".opt"),function(b){b.onclick=function(){pick(b)}});
+}
+function pick(b){
+  if(locked)return;locked=true;var n=order[idx],q=Q[n],c=+b.dataset.o,ok=c===q.a;
+  Array.prototype.forEach.call(document.querySelectorAll(".opt"),function(x){x.disabled=true;if(+x.dataset.o===q.a)x.classList.add("right")});
+  if(ok){score++}else{b.classList.add("wrong");missed.push(n)}
+  var fb=$("fb");fb.className="fb "+(ok?"ok":"no");
+  fb.innerHTML="<strong>"+(ok?"Correct.":"Not quite.")+"</strong> "+q.e;
+  $("sc").textContent="Score: "+score;
+  $("next").textContent=idx===Q.length-1?"See my result":"Next question";$("next").classList.remove("hidden");$("next").focus();
+}
+$("next").onclick=function(){idx++;if(idx>=Q.length)finish();else show()};
+function finish(){
+  $("play").classList.add("hidden");$("end").classList.remove("hidden");
+  var pct=Math.round(score/Q.length*100);
+  $("who").textContent=$("nm").value.trim()+($("cl").value.trim()?" · "+$("cl").value.trim():"");
+  $("fin").textContent=score+" / "+Q.length+" ("+pct+"%)";
+  var b=pct>=85?"Exceeding":pct>=65?"Secure":pct>=45?"Developing":"Beginning";
+  var t=BANDS[b].t,tips=BANDS[b].tips.slice();
+  var by={};TOPICS.forEach(function(x){by[x]={s:0,n:0}});
+  Q.forEach(function(q,i){by[q.t].n++});
+  Q.forEach(function(q,i){if(missed.indexOf(i)<0)by[q.t].s++});
+  var worst=null,wp=2;
+  $("tp").innerHTML=TOPICS.map(function(x){var p=by[x].s/by[x].n;if(p<wp){wp=p;worst=x}return'<div class="r"><span class="n">'+x+'</span><span class="b"><i style="width:'+Math.round(p*100)+'%"></i></span><span class="v">'+by[x].s+'/'+by[x].n+'</span></div>'}).join("");
+  if(wp<1)tips.push("Revise first: <strong>"+worst+"</strong>.");
+  $("band").textContent=b;$("bandtxt").textContent=t;
+  $("tips").innerHTML=tips.map(function(x){return"<li>"+x+"</li>"}).join("");
+  var r=$("review");
+  if(!missed.length){r.innerHTML="<p>Full marks. Nothing to review.</p>"}
+  else{r.innerHTML=missed.map(function(n){var q=Q[n];return'<div class="rev"><div><strong>'+q.q+'</strong></div><div style="color:var(--ok)">Answer: '+q.o[q.a]+'</div><div style="color:var(--muted)">'+q.e+'</div></div>'}).join("")}
+  window.scrollTo(0,0);
+}
+</script>
+</body>
+</html>
