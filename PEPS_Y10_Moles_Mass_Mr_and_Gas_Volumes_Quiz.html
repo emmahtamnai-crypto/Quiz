@@ -1,0 +1,143 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Moles: Mass, M<sub>r</sub> and Gas Volumes</title>
+<style>
+:root{--bg:#f5f7fb;--card:#fff;--ink:#1b2333;--muted:#5f6b7f;--line:#d9dfea;--brand:#1f4e8c;--ok:#1b7f4b;--okbg:#e6f5ec;--bad:#b3261e;--badbg:#fbe9e7;--sel:#e8f0fb}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#10151f;--card:#18202e;--ink:#e8edf6;--muted:#9aa7bd;--line:#2b3649;--brand:#7fb0ee;--ok:#5fd394;--okbg:#14301f;--bad:#ff8a80;--badbg:#3a1a18;--sel:#1e2b42}}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.5 system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif}
+.wrap{max-width:720px;margin:0 auto;padding:20px 16px 48px}
+header{text-align:center;margin-bottom:18px}
+header .school{font-size:13px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+h1{font-size:26px;margin:4px 0}
+header p{margin:4px 0;color:var(--muted)}
+.card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:20px;margin-bottom:16px}
+label{display:block;font-weight:600;margin:10px 0 4px}
+input[type=text]{width:100%;padding:11px 12px;border:1px solid var(--line);border-radius:10px;background:var(--bg);color:var(--ink);font-size:16px}
+button{font:inherit;cursor:pointer}
+.btn{background:var(--brand);color:#fff;border:0;border-radius:10px;padding:12px 20px;font-weight:600;min-height:44px}
+.btn.sec{background:transparent;color:var(--brand);border:1px solid var(--brand)}
+.btn:disabled{opacity:.45;cursor:not-allowed}
+.bar{height:8px;background:var(--line);border-radius:6px;overflow:hidden;margin-bottom:14px}
+.bar i{display:block;height:100%;background:var(--brand);width:0;transition:width .3s}
+.meta{display:flex;justify-content:space-between;color:var(--muted);font-size:14px;margin-bottom:8px}
+.q{font-size:19px;font-weight:600;margin:6px 0 14px}
+.opt{display:flex;gap:10px;align-items:flex-start;width:100%;text-align:left;background:var(--card);color:var(--ink);border:1.5px solid var(--line);border-radius:10px;padding:12px 14px;margin-bottom:10px;min-height:48px}
+.opt:hover:not(:disabled){background:var(--sel)}
+.opt .k{font-weight:700;color:var(--brand);min-width:20px}
+.opt.right{background:var(--okbg);border-color:var(--ok)}
+.opt.wrong{background:var(--badbg);border-color:var(--bad)}
+.fb{margin-top:10px;padding:12px 14px;border-radius:10px;border:1px solid var(--line)}
+.fb.ok{background:var(--okbg);border-color:var(--ok)}
+.fb.no{background:var(--badbg);border-color:var(--bad)}
+.score{font-size:46px;font-weight:700;text-align:center;margin:4px 0}
+.band{text-align:center;font-weight:700;color:var(--brand);font-size:20px}
+ul.tips{padding-left:20px}
+.rev{border-top:1px solid var(--line);padding:12px 0}
+.rev:first-child{border-top:0}
+.hidden{display:none}
+.row{display:flex;gap:10px;flex-wrap:wrap}
+sub,sup{line-height:0}
+#tp .r{display:flex;align-items:center;gap:10px;margin:8px 0}#tp .r span.n{flex:0 0 46%}#tp .r .b{flex:1;height:10px;background:var(--line);border-radius:6px;overflow:hidden}#tp .r .b i{display:block;height:100%;background:var(--brand)}#tp .r span.v{min-width:44px;text-align:right;font-weight:600}
+@media print{body{background:#fff;color:#000}.btn,.row{display:none}.card{border:1px solid #999}}
+</style>
+</head>
+<body>
+<div class="wrap">
+<header>
+<div class="school">Providence English Private School</div>
+<h1>Moles: Mass, M<sub>r</sub> and Gas Volumes</h1>
+<p>Year 10 IGCSE Chemistry · Miss Emmah M. Tamnai</p>
+</header>
+
+<section id="start" class="card">
+<p>21 questions on relative formula mass, calculating mass and moles, and the volume of gases at room temperature and pressure (24 dm<sup>3</sup> per mole). You get feedback after every answer and a score for each topic at the end.</p>
+<label for="nm">Name</label><input id="nm" type="text" autocomplete="name">
+<label for="cl">Class</label><input id="cl" type="text" placeholder="e.g. 11A">
+<p style="margin-top:16px"><button class="btn" id="go" disabled>Start quiz</button></p>
+</section>
+
+<section id="play" class="card hidden">
+<div class="meta"><span id="cnt"></span><span id="sc"></span></div>
+<div class="bar"><i id="pg"></i></div>
+<div class="q" id="qt"></div>
+<div id="opts"></div>
+<div id="fb" class="fb hidden" role="status" aria-live="polite"></div>
+<p style="margin-top:14px"><button class="btn hidden" id="next">Next question</button></p>
+</section>
+
+<section id="end" class="hidden">
+<div class="card">
+<div id="who" style="text-align:center;color:var(--muted)"></div>
+<div class="score" id="fin"></div>
+<div class="band" id="band"></div>
+<p id="bandtxt" style="text-align:center;color:var(--muted)"></p>
+<div class="row" style="justify-content:center">
+<button class="btn" id="again">Try again</button>
+<button class="btn sec" onclick="window.print()">Print / save result</button>
+</div>
+</div>
+<div class="card"><h2 style="margin-top:0;font-size:18px">Score by topic</h2><div id="tp"></div></div>
+<div class="card"><h2 style="margin-top:0;font-size:18px">Next steps</h2><ul class="tips" id="tips"></ul></div>
+<div class="card"><h2 style="margin-top:0;font-size:18px">Questions to review</h2><div id="review"></div></div>
+</section>
+</div>
+
+<script>
+var Q=[{"t": "Relative formula mass", "q": "What is the M<sub>r</sub> of magnesium hydroxide, Mg(OH)<sub>2</sub>? (A<sub>r</sub>: Mg = 24, O = 16, H = 1)", "o": ["74", "57", "41", "58"], "a": 3, "e": "The bracket means two OH groups: 24 + 2 × (16 + 1) = 58."}, {"t": "Relative formula mass", "q": "What is the M<sub>r</sub> of ammonium sulfate, (NH<sub>4</sub>)<sub>2</sub>SO<sub>4</sub>? (A<sub>r</sub>: N = 14, H = 1, S = 32, O = 16)", "o": ["132", "98", "146", "114"], "a": 0, "e": "2 × (14 + 4) + 32 + 4 × 16 = 36 + 32 + 64 = 132."}, {"t": "Relative formula mass", "q": "What is the M<sub>r</sub> of hydrated copper(II) sulfate, CuSO<sub>4</sub>·5H<sub>2</sub>O? (A<sub>r</sub>: Cu = 64, S = 32, O = 16, H = 1)", "o": ["160", "250", "232", "178"], "a": 1, "e": "CuSO<sub>4</sub> = 64 + 32 + 64 = 160. 5H<sub>2</sub>O = 5 × 18 = 90. Total = 160 + 90 = 250."}, {"t": "Relative formula mass", "q": "What is the M<sub>r</sub> of ethanol, C<sub>2</sub>H<sub>5</sub>OH? (A<sub>r</sub>: C = 12, H = 1, O = 16)", "o": ["45", "30", "46", "62"], "a": 2, "e": "Count the atoms: 2 C, 6 H, 1 O. 24 + 6 + 16 = 46."}, {"t": "Relative formula mass", "q": "What is the M<sub>r</sub> of sulfuric acid, H<sub>2</sub>SO<sub>4</sub>? (A<sub>r</sub>: H = 1, S = 32, O = 16)", "o": ["114", "98", "82", "66"], "a": 1, "e": "2 × 1 + 32 + 4 × 16 = 2 + 32 + 64 = 98."}, {"t": "Mass and moles", "q": "How many moles are in 11 g of carbon dioxide, CO<sub>2</sub>? (M<sub>r</sub> = 44)", "o": ["4.0 mol", "0.25 mol", "484 mol", "0.50 mol"], "a": 1, "e": "moles = mass ÷ M<sub>r</sub> = 11 ÷ 44 = 0.25 mol."}, {"t": "Mass and moles", "q": "What is the mass of 0.50 mol of sodium carbonate, Na<sub>2</sub>CO<sub>3</sub>? (M<sub>r</sub> = 106)", "o": ["53 g", "26.5 g", "106 g", "212 g"], "a": 0, "e": "mass = moles × M<sub>r</sub> = 0.50 × 106 = 53 g."}, {"t": "Mass and moles", "q": "How many moles are in 9.8 g of sulfuric acid, H<sub>2</sub>SO<sub>4</sub>? (M<sub>r</sub> = 98)", "o": ["10 mol", "0.010 mol", "1.0 mol", "0.10 mol"], "a": 3, "e": "moles = mass ÷ M<sub>r</sub> = 9.8 ÷ 98 = 0.10 mol."}, {"t": "Mass and moles", "q": "What is the mass of 2.5 mol of water, H<sub>2</sub>O? (M<sub>r</sub> = 18)", "o": ["20 g", "7.2 g", "45 g", "90 g"], "a": 2, "e": "mass = moles × M<sub>r</sub> = 2.5 × 18 = 45 g."}, {"t": "Mass and moles", "q": "3.2 g of a substance contains 0.050 mol. What is its M<sub>r</sub>?", "o": ["0.016", "160", "6.4", "64"], "a": 3, "e": "M<sub>r</sub> = mass ÷ moles = 3.2 ÷ 0.050 = 64."}, {"t": "Mass and moles", "q": "Mg + 2HCl → MgCl<sub>2</sub> + H<sub>2</sub>. How many moles of hydrogen form from 0.30 mol of magnesium?", "o": ["0.60 mol", "0.30 mol", "0.15 mol", "0.90 mol"], "a": 1, "e": "The equation ratio Mg : H<sub>2</sub> is 1 : 1, so 0.30 mol Mg gives 0.30 mol H<sub>2</sub>."}, {"t": "Mass and moles", "q": "2Mg + O<sub>2</sub> → 2MgO. What mass of magnesium oxide forms from 2.4 g of magnesium? (A<sub>r</sub>: Mg = 24, O = 16)", "o": ["4.0 g", "3.2 g", "8.0 g", "2.0 g"], "a": 0, "e": "2.4 ÷ 24 = 0.10 mol Mg. Ratio 1 : 1 gives 0.10 mol MgO. M<sub>r</sub> of MgO = 40, so 0.10 × 40 = 4.0 g."}, {"t": "Gas volumes at room temperature", "q": "One mole of any gas at room temperature and pressure (rtp) occupies 24 dm<sup>3</sup>. What volume do 0.50 mol of a gas occupy at rtp?", "o": ["0.021 dm<sup>3</sup>", "24 dm<sup>3</sup>", "12 dm<sup>3</sup>", "48 dm<sup>3</sup>"], "a": 2, "e": "volume = moles × 24 = 0.50 × 24 = 12 dm<sup>3</sup>."}, {"t": "Gas volumes at room temperature", "q": "What volume do 2.0 mol of oxygen, O<sub>2</sub>, occupy at rtp?", "o": ["24 dm<sup>3</sup>", "12 dm<sup>3</sup>", "96 dm<sup>3</sup>", "48 dm<sup>3</sup>"], "a": 3, "e": "volume = moles × 24 = 2.0 × 24 = 48 dm<sup>3</sup>. The type of gas does not matter."}, {"t": "Gas volumes at room temperature", "q": "How many moles of gas are in 6.0 dm<sup>3</sup> at rtp?", "o": ["0.50 mol", "0.25 mol", "4.0 mol", "144 mol"], "a": 1, "e": "moles = volume ÷ 24 = 6.0 ÷ 24 = 0.25 mol."}, {"t": "Gas volumes at room temperature", "q": "How many moles of gas are in 480 cm<sup>3</sup> at rtp?", "o": ["11 520 mol", "0.20 mol", "0.020 mol", "20 mol"], "a": 2, "e": "Change cm<sup>3</sup> to dm<sup>3</sup>: 480 ÷ 1000 = 0.48 dm<sup>3</sup>. Then 0.48 ÷ 24 = 0.020 mol."}, {"t": "Gas volumes at room temperature", "q": "What volume do 8.0 g of oxygen, O<sub>2</sub>, occupy at rtp? (A<sub>r</sub> of O = 16)", "o": ["3.0 dm<sup>3</sup>", "192 dm<sup>3</sup>", "6.0 dm<sup>3</sup>", "12 dm<sup>3</sup>"], "a": 2, "e": "M<sub>r</sub> of O<sub>2</sub> = 32. Moles = 8.0 ÷ 32 = 0.25. Volume = 0.25 × 24 = 6.0 dm<sup>3</sup>."}, {"t": "Gas volumes at room temperature", "q": "What is the mass of 12 dm<sup>3</sup> of methane, CH<sub>4</sub>, at rtp? (A<sub>r</sub>: C = 12, H = 1)", "o": ["8.0 g", "192 g", "16 g", "4.0 g"], "a": 0, "e": "Moles = 12 ÷ 24 = 0.50. M<sub>r</sub> of CH<sub>4</sub> = 16. Mass = 0.50 × 16 = 8.0 g."}, {"t": "Gas volumes at room temperature", "q": "CaCO<sub>3</sub> + 2HCl → CaCl<sub>2</sub> + CO<sub>2</sub> + H<sub>2</sub>O. What volume of carbon dioxide forms at rtp from 2.5 g of calcium carbonate? (M<sub>r</sub> of CaCO<sub>3</sub> = 100)", "o": ["0.060 dm<sup>3</sup>", "1.2 dm<sup>3</sup>", "6.0 dm<sup>3</sup>", "0.60 dm<sup>3</sup>"], "a": 3, "e": "Moles CaCO<sub>3</sub> = 2.5 ÷ 100 = 0.025. Ratio 1 : 1 gives 0.025 mol CO<sub>2</sub>. Volume = 0.025 × 24 = 0.60 dm<sup>3</sup>."}, {"t": "Gas volumes at room temperature", "q": "2H<sub>2</sub> + O<sub>2</sub> → 2H<sub>2</sub>O (all gases). What volume of oxygen reacts completely with 12 dm<sup>3</sup> of hydrogen at the same temperature and pressure?", "o": ["3 dm<sup>3</sup>", "12 dm<sup>3</sup>", "24 dm<sup>3</sup>", "6 dm<sup>3</sup>"], "a": 3, "e": "The ratio H<sub>2</sub> : O<sub>2</sub> is 2 : 1, and gas volumes are in the same ratio as moles. So 12 ÷ 2 = 6 dm<sup>3</sup>."}, {"t": "Gas volumes at room temperature", "q": "Which sample has the largest volume at rtp? (A<sub>r</sub>: H = 1, N = 14, O = 16, C = 12)", "o": ["4.0 g of H<sub>2</sub>", "44 g of CO<sub>2</sub>", "14 g of N<sub>2</sub>", "32 g of O<sub>2</sub>"], "a": 0, "e": "Moles: H<sub>2</sub> = 4 ÷ 2 = 2.0; N<sub>2</sub> = 14 ÷ 28 = 0.50; O<sub>2</sub> = 32 ÷ 32 = 1.0; CO<sub>2</sub> = 44 ÷ 44 = 1.0. The most moles has the largest volume."}];
+var TOPICS=["Relative formula mass", "Mass and moles", "Gas volumes at room temperature"];
+var BANDS={"Exceeding": {"t": "Excellent. You can handle mass and gas volume calculations with confidence.", "tips": ["Try mixed problems: find the mass, then the volume, of a gas made in a reaction.", "Explain each step in words as you calculate."]}, "Secure": {"t": "Good. A few steps need tightening.", "tips": ["Write the equation first, then substitute, then add the unit.", "Convert cm<sup>3</sup> to dm<sup>3</sup> by dividing by 1000 before using 24."]}, "Developing": {"t": "You know the main ideas. Keep practising.", "tips": ["Learn: moles = mass ÷ M<sub>r</sub> and moles = volume ÷ 24 (dm<sup>3</sup>, at rtp).", "Write the A<sub>r</sub> of every atom in a list before you add."]}, "Beginning": {"t": "You are starting to build understanding. Ask for help and try again.", "tips": ["Revise what A<sub>r</sub> and M<sub>r</sub> mean.", "Use the moles triangle and the worked examples in your notebook."]}};
+var $=function(id){return document.getElementById(id)};
+var order,idx,score,missed,locked;
+function shuffle(a){for(var i=a.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1));var t=a[i];a[i]=a[j];a[j]=t}return a}
+function chk(){$("go").disabled=!$("nm").value.trim()}
+$("nm").addEventListener("input",chk);
+$("go").onclick=function(){start()};
+$("again").onclick=function(){$("end").classList.add("hidden");start()};
+function start(){order=shuffle(Q.map(function(_,i){return i}));idx=0;score=0;missed=[];$("start").classList.add("hidden");$("play").classList.remove("hidden");show()}
+function show(){
+  locked=false;var n=order[idx],q=Q[n];
+  $("cnt").textContent="Question "+(idx+1)+" of "+Q.length;$("sc").textContent="Score: "+score;
+  $("pg").style.width=(idx/Q.length*100)+"%";
+  $("qt").innerHTML=q.q;$("fb").className="fb hidden";$("next").classList.add("hidden");
+  var idxs=shuffle(q.o.map(function(_,i){return i}));var h="";
+  idxs.forEach(function(oi,k){h+='<button class="opt" data-o="'+oi+'"><span class="k">'+"ABCD"[k]+'</span><span>'+q.o[oi]+'</span></button>'});
+  $("opts").innerHTML=h;
+  Array.prototype.forEach.call(document.querySelectorAll(".opt"),function(b){b.onclick=function(){pick(b)}});
+}
+function pick(b){
+  if(locked)return;locked=true;var n=order[idx],q=Q[n],c=+b.dataset.o,ok=c===q.a;
+  Array.prototype.forEach.call(document.querySelectorAll(".opt"),function(x){x.disabled=true;if(+x.dataset.o===q.a)x.classList.add("right")});
+  if(ok){score++}else{b.classList.add("wrong");missed.push(n)}
+  var fb=$("fb");fb.className="fb "+(ok?"ok":"no");
+  fb.innerHTML="<strong>"+(ok?"Correct.":"Not quite.")+"</strong> "+q.e;
+  $("sc").textContent="Score: "+score;
+  $("next").textContent=idx===Q.length-1?"See my result":"Next question";$("next").classList.remove("hidden");$("next").focus();
+}
+$("next").onclick=function(){idx++;if(idx>=Q.length)finish();else show()};
+function finish(){
+  $("play").classList.add("hidden");$("end").classList.remove("hidden");
+  var pct=Math.round(score/Q.length*100);
+  $("who").textContent=$("nm").value.trim()+($("cl").value.trim()?" · "+$("cl").value.trim():"");
+  $("fin").textContent=score+" / "+Q.length+" ("+pct+"%)";
+  var b=pct>=85?"Exceeding":pct>=65?"Secure":pct>=45?"Developing":"Beginning";
+  var t=BANDS[b].t,tips=BANDS[b].tips.slice();
+  var by={};TOPICS.forEach(function(x){by[x]={s:0,n:0}});
+  Q.forEach(function(q,i){by[q.t].n++});
+  Q.forEach(function(q,i){if(missed.indexOf(i)<0)by[q.t].s++});
+  var worst=null,wp=2;
+  $("tp").innerHTML=TOPICS.map(function(x){var p=by[x].s/by[x].n;if(p<wp){wp=p;worst=x}return'<div class="r"><span class="n">'+x+'</span><span class="b"><i style="width:'+Math.round(p*100)+'%"></i></span><span class="v">'+by[x].s+'/'+by[x].n+'</span></div>'}).join("");
+  if(wp<1)tips.push("Revise first: <strong>"+worst+"</strong>.");
+  $("band").textContent=b;$("bandtxt").textContent=t;
+  $("tips").innerHTML=tips.map(function(x){return"<li>"+x+"</li>"}).join("");
+  var r=$("review");
+  if(!missed.length){r.innerHTML="<p>Full marks. Nothing to review.</p>"}
+  else{r.innerHTML=missed.map(function(n){var q=Q[n];return'<div class="rev"><div><strong>'+q.q+'</strong></div><div style="color:var(--ok)">Answer: '+q.o[q.a]+'</div><div style="color:var(--muted)">'+q.e+'</div></div>'}).join("")}
+  window.scrollTo(0,0);
+}
+</script>
+</body>
+</html>
