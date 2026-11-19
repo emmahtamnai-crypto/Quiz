@@ -1,0 +1,143 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Preparation of Salts: Methods, Equations and Calculations</title>
+<style>
+:root{--bg:#f5f7fb;--card:#fff;--ink:#1b2333;--muted:#5f6b7f;--line:#d9dfea;--brand:#1f4e8c;--ok:#1b7f4b;--okbg:#e6f5ec;--bad:#b3261e;--badbg:#fbe9e7;--sel:#e8f0fb}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#10151f;--card:#18202e;--ink:#e8edf6;--muted:#9aa7bd;--line:#2b3649;--brand:#7fb0ee;--ok:#5fd394;--okbg:#14301f;--bad:#ff8a80;--badbg:#3a1a18;--sel:#1e2b42}}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.5 system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif}
+.wrap{max-width:720px;margin:0 auto;padding:20px 16px 48px}
+header{text-align:center;margin-bottom:18px}
+header .school{font-size:13px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+h1{font-size:26px;margin:4px 0}
+header p{margin:4px 0;color:var(--muted)}
+.card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:20px;margin-bottom:16px}
+label{display:block;font-weight:600;margin:10px 0 4px}
+input[type=text]{width:100%;padding:11px 12px;border:1px solid var(--line);border-radius:10px;background:var(--bg);color:var(--ink);font-size:16px}
+button{font:inherit;cursor:pointer}
+.btn{background:var(--brand);color:#fff;border:0;border-radius:10px;padding:12px 20px;font-weight:600;min-height:44px}
+.btn.sec{background:transparent;color:var(--brand);border:1px solid var(--brand)}
+.btn:disabled{opacity:.45;cursor:not-allowed}
+.bar{height:8px;background:var(--line);border-radius:6px;overflow:hidden;margin-bottom:14px}
+.bar i{display:block;height:100%;background:var(--brand);width:0;transition:width .3s}
+.meta{display:flex;justify-content:space-between;color:var(--muted);font-size:14px;margin-bottom:8px}
+.q{font-size:19px;font-weight:600;margin:6px 0 14px}
+.opt{display:flex;gap:10px;align-items:flex-start;width:100%;text-align:left;background:var(--card);color:var(--ink);border:1.5px solid var(--line);border-radius:10px;padding:12px 14px;margin-bottom:10px;min-height:48px}
+.opt:hover:not(:disabled){background:var(--sel)}
+.opt .k{font-weight:700;color:var(--brand);min-width:20px}
+.opt.right{background:var(--okbg);border-color:var(--ok)}
+.opt.wrong{background:var(--badbg);border-color:var(--bad)}
+.fb{margin-top:10px;padding:12px 14px;border-radius:10px;border:1px solid var(--line)}
+.fb.ok{background:var(--okbg);border-color:var(--ok)}
+.fb.no{background:var(--badbg);border-color:var(--bad)}
+.score{font-size:46px;font-weight:700;text-align:center;margin:4px 0}
+.band{text-align:center;font-weight:700;color:var(--brand);font-size:20px}
+ul.tips{padding-left:20px}
+.rev{border-top:1px solid var(--line);padding:12px 0}
+.rev:first-child{border-top:0}
+.hidden{display:none}
+.row{display:flex;gap:10px;flex-wrap:wrap}
+sub,sup{line-height:0}
+#tp .r{display:flex;align-items:center;gap:10px;margin:8px 0}#tp .r span.n{flex:0 0 46%}#tp .r .b{flex:1;height:10px;background:var(--line);border-radius:6px;overflow:hidden}#tp .r .b i{display:block;height:100%;background:var(--brand)}#tp .r span.v{min-width:44px;text-align:right;font-weight:600}
+@media print{body{background:#fff;color:#000}.btn,.row{display:none}.card{border:1px solid #999}}
+</style>
+</head>
+<body>
+<div class="wrap">
+<header>
+<div class="school">Providence English Private School</div>
+<h1>Preparation of Salts: Methods, Equations and Calculations</h1>
+<p>Year 11 IGCSE Chemistry · Miss Emmah M. Tamnai</p>
+</header>
+
+<section id="start" class="card">
+<p>24 questions on choosing a method, making soluble and insoluble salts, ionic equations and titration calculations. You get feedback after every answer and a score for each topic at the end.</p>
+<label for="nm">Name</label><input id="nm" type="text" autocomplete="name">
+<label for="cl">Class</label><input id="cl" type="text" placeholder="e.g. 11A">
+<p style="margin-top:16px"><button class="btn" id="go" disabled>Start quiz</button></p>
+</section>
+
+<section id="play" class="card hidden">
+<div class="meta"><span id="cnt"></span><span id="sc"></span></div>
+<div class="bar"><i id="pg"></i></div>
+<div class="q" id="qt"></div>
+<div id="opts"></div>
+<div id="fb" class="fb hidden" role="status" aria-live="polite"></div>
+<p style="margin-top:14px"><button class="btn hidden" id="next">Next question</button></p>
+</section>
+
+<section id="end" class="hidden">
+<div class="card">
+<div id="who" style="text-align:center;color:var(--muted)"></div>
+<div class="score" id="fin"></div>
+<div class="band" id="band"></div>
+<p id="bandtxt" style="text-align:center;color:var(--muted)"></p>
+<div class="row" style="justify-content:center">
+<button class="btn" id="again">Try again</button>
+<button class="btn sec" onclick="window.print()">Print / save result</button>
+</div>
+</div>
+<div class="card"><h2 style="margin-top:0;font-size:18px">Score by topic</h2><div id="tp"></div></div>
+<div class="card"><h2 style="margin-top:0;font-size:18px">Next steps</h2><ul class="tips" id="tips"></ul></div>
+<div class="card"><h2 style="margin-top:0;font-size:18px">Questions to review</h2><div id="review"></div></div>
+</section>
+</div>
+
+<script>
+var Q=[{"t": "Choosing a method", "q": "Which salt can be made by adding an excess of an insoluble solid to dilute acid?", "o": ["ammonium nitrate", "magnesium sulfate", "barium sulfate", "potassium chloride"], "a": 1, "e": "Magnesium oxide, hydroxide or carbonate is insoluble and can be added in excess to dilute sulfuric acid. Potassium and ammonium compounds are soluble, so titration is needed. Barium sulfate is insoluble, so it is made by precipitation."}, {"t": "Choosing a method", "q": "Which metal is most suitable for making a salt by adding the metal to dilute hydrochloric acid in the laboratory?", "o": ["silver", "zinc", "copper", "potassium"], "a": 1, "e": "Zinc reacts at a safe, moderate rate. Copper and silver are below hydrogen in the reactivity series and do not react. Potassium reacts violently."}, {"t": "Choosing a method", "q": "Which pair of reactants makes copper(II) chloride?", "o": ["copper(II) oxide and dilute hydrochloric acid", "copper and dilute hydrochloric acid", "copper(II) sulfate and sodium chloride solution", "copper(II) carbonate and dilute sulfuric acid"], "a": 0, "e": "The acid gives the anion (chloride) and the metal oxide gives the cation. Copper does not react with dilute acid."}, {"t": "Choosing a method", "q": "Which pair of solutions would you mix to make barium sulfate?", "o": ["barium sulfate and water", "barium nitrate and magnesium sulfate", "barium carbonate and sodium sulfate", "barium metal and sulfuric acid"], "a": 1, "e": "Both reactants must be soluble. Barium nitrate and magnesium sulfate are soluble. Barium carbonate is insoluble."}, {"t": "Choosing a method", "q": "Which reaction is a neutralisation that makes a soluble salt where excess solid cannot be used?", "o": ["sodium hydroxide + nitric acid", "lead(II) nitrate + sodium sulfate", "magnesium oxide + sulfuric acid", "zinc + hydrochloric acid"], "a": 0, "e": "Sodium hydroxide is soluble, so you cannot filter off an excess. Use titration. The other methods use an insoluble solid or form a precipitate."}, {"t": "Choosing a method", "q": "Why is potassium metal not used to make potassium salts from dilute acid?", "o": ["potassium salts are insoluble", "potassium is below hydrogen in the reactivity series", "the reaction is too violent and dangerous", "potassium does not react with acids"], "a": 2, "e": "Potassium is very reactive and reacts explosively with water and acids. Safer: titrate potassium hydroxide with acid."}, {"t": "Making soluble salts", "q": "Magnesium carbonate is added to warm dilute sulfuric acid. What do you observe?", "o": ["the mixture turns black", "effervescence (bubbles of gas) and the solid dissolves", "a blue solution forms", "a white precipitate forms immediately"], "a": 1, "e": "Carbon dioxide gas is released. Magnesium sulfate is soluble, so the carbonate dissolves until the acid is used up."}, {"t": "Making soluble salts", "q": "Which is the correct balanced equation for zinc oxide and hydrochloric acid?", "o": ["ZnO + 2HCl → ZnCl + H<sub>2</sub>O", "ZnO + HCl → ZnCl<sub>2</sub> + H<sub>2</sub>O", "ZnO + HCl → ZnCl + H<sub>2</sub>O", "ZnO + 2HCl → ZnCl<sub>2</sub> + H<sub>2</sub>O"], "a": 3, "e": "Zinc forms Zn<sup>2+</sup> so the formula is ZnCl<sub>2</sub>. Two chloride ions need 2HCl."}, {"t": "Making soluble salts", "q": "Why is the acid warmed before adding the insoluble solid?", "o": ["to make the salt insoluble", "to neutralise the acid", "to increase the rate of reaction", "to remove the excess solid"], "a": 2, "e": "Heating increases particle energy and collisions, so the reaction is faster. It does not change the products."}, {"t": "Making soluble salts", "q": "After filtering, why is the salt solution not heated until it is completely dry?", "o": ["the solution would become more acidic", "the salt would turn into an acid", "dry heating can decompose hydrated crystals and gives small impure crystals", "the filtrate would turn insoluble"], "a": 2, "e": "Heat until the saturation point (crystals form on a glass rod), then cool slowly to grow large pure crystals."}, {"t": "Making soluble salts", "q": "How can you tell the solution has reached the point of crystallisation?", "o": ["a drop on a cold glass rod forms crystals", "the volume doubles", "the solution changes colour", "the solution stops bubbling"], "a": 0, "e": "Dip a glass rod in, remove and let it cool. If crystals form, the solution is saturated and ready to cool."}, {"t": "Making soluble salts", "q": "What is the best way to dry the crystals at the end?", "o": ["wash them with acid", "boil them in water", "press them between filter papers", "heat them strongly in a crucible"], "a": 2, "e": "Strong heating can drive off water of crystallisation. Gentle drying keeps the crystals intact."}, {"t": "Making soluble salts", "q": "A student uses 0.050 mol of magnesium oxide with excess acid to make magnesium sulfate (M<sub>r</sub> = 120). What is the maximum mass of salt?", "o": ["6.0 g", "0.42 g", "12 g", "2.4 g"], "a": 0, "e": "Mass = moles × M<sub>r</sub> = 0.050 × 120 = 6.0 g (the ratio MgO : MgSO<sub>4</sub> is 1 : 1)."}, {"t": "Precipitation and ionic equations", "q": "What is the ionic equation for the formation of barium sulfate?", "o": ["Ba<sup>2+</sup>(aq) + SO<sub>4</sub><sup>2−</sup>(aq) → BaSO<sub>4</sub>(aq)", "BaCl<sub>2</sub> + Na<sub>2</sub>SO<sub>4</sub> → BaSO<sub>4</sub> + 2NaCl", "Ba<sup>2+</sup>(aq) + SO<sub>4</sub><sup>2−</sup>(aq) → BaSO<sub>4</sub>(s)", "Ba(aq) + SO<sub>4</sub>(aq) → BaSO<sub>4</sub>(s)"], "a": 2, "e": "An ionic equation shows only the ions that react and the precipitate with its state symbol (s)."}, {"t": "Precipitation and ionic equations", "q": "Silver nitrate solution is mixed with sodium chloride solution. Which ions are spectator ions?", "o": ["Ag<sup>+</sup> and NO<sub>3</sub><sup>−</sup>", "Na<sup>+</sup> and Cl<sup>−</sup>", "Ag<sup>+</sup> and Cl<sup>−</sup>", "Na<sup>+</sup> and NO<sub>3</sub><sup>−</sup>"], "a": 3, "e": "Ag<sup>+</sup> and Cl<sup>−</sup> combine to form AgCl(s). Na<sup>+</sup> and NO<sub>3</sub><sup>−</sup> stay in solution unchanged."}, {"t": "Precipitation and ionic equations", "q": "What is the ionic equation for the formation of lead(II) iodide?", "o": ["Pb<sup>2+</sup>(aq) + I<sup>−</sup>(aq) → PbI<sub>2</sub>(s)", "Pb<sup>2+</sup>(aq) + 2I<sup>−</sup>(aq) → PbI<sub>2</sub>(aq)", "Pb(aq) + I<sub>2</sub>(aq) → PbI<sub>2</sub>(s)", "Pb<sup>2+</sup>(aq) + 2I<sup>−</sup>(aq) → PbI<sub>2</sub>(s)"], "a": 3, "e": "Two iodide ions are needed to balance the 2+ charge of lead."}, {"t": "Precipitation and ionic equations", "q": "What colour is the precipitate of lead(II) iodide?", "o": ["blue", "green", "white", "yellow"], "a": 3, "e": "Lead(II) iodide forms a bright yellow solid. Lead(II) chloride and sulfate are white."}, {"t": "Precipitation and ionic equations", "q": "Why must both reactants be soluble when making an insoluble salt by precipitation?", "o": ["so that the solution becomes acidic", "so the salt becomes soluble", "so that no filtering is needed", "so the ions are free to move and collide in solution"], "a": 3, "e": "Dissolved ions mix and the ions of the insoluble salt combine to form the precipitate."}, {"t": "Precipitation and ionic equations", "q": "25 cm<sup>3</sup> of 0.10 mol/dm<sup>3</sup> barium chloride is mixed with excess sodium sulfate solution. What mass of barium sulfate (M<sub>r</sub> = 233) forms?", "o": ["2.3 g", "5.8 g", "0.58 g", "0.058 g"], "a": 2, "e": "Moles BaCl<sub>2</sub> = 0.025 × 0.10 = 0.0025. Ratio 1 : 1. Mass = 0.0025 × 233 = 0.58 g."}, {"t": "Titration and calculations", "q": "25.0 cm<sup>3</sup> of 0.100 mol/dm<sup>3</sup> NaOH is neutralised by 20.0 cm<sup>3</sup> of HCl. What is the concentration of the HCl?", "o": ["0.125 mol/dm<sup>3</sup>", "0.100 mol/dm<sup>3</sup>", "0.080 mol/dm<sup>3</sup>", "0.200 mol/dm<sup>3</sup>"], "a": 0, "e": "Moles NaOH = 0.0250 × 0.100 = 0.00250. The ratio is 1 : 1. Concentration = 0.00250 ÷ 0.0200 = 0.125 mol/dm<sup>3</sup>."}, {"t": "Titration and calculations", "q": "Why is the titration repeated without the indicator before crystallising the salt?", "o": ["so the salt is not contaminated by the indicator", "to make the salt insoluble", "to neutralise the salt", "to find the concentration of the indicator"], "a": 0, "e": "Use the same volumes found in the first titration but leave out the indicator, then crystallise the pure salt."}, {"t": "Titration and calculations", "q": "Why is a pipette used to measure the alkali and a burette to add the acid?", "o": ["they speed up the reaction", "they measure volumes accurately", "they heat the solutions", "they filter the mixture"], "a": 1, "e": "Accurate volumes are needed to calculate concentrations and reach the exact end-point."}, {"t": "Titration and calculations", "q": "The theoretical yield of salt crystals is 6.25 g and the student obtains 5.00 g. What is the percentage yield?", "o": ["62.5%", "20%", "125%", "80%"], "a": 3, "e": "5.00 ÷ 6.25 × 100 = 80%."}, {"t": "Titration and calculations", "q": "In the titration of sulfuric acid with sodium hydroxide, which is the correct ratio of moles?", "o": ["2 mol H<sub>2</sub>SO<sub>4</sub> reacts with 1 mol NaOH", "1 mol H<sub>2</sub>SO<sub>4</sub> reacts with 2 mol NaOH", "1 mol H<sub>2</sub>SO<sub>4</sub> reacts with 1 mol NaOH", "1 mol H<sub>2</sub>SO<sub>4</sub> reacts with 3 mol NaOH"], "a": 1, "e": "H<sub>2</sub>SO<sub>4</sub> + 2NaOH → Na<sub>2</sub>SO<sub>4</sub> + 2H<sub>2</sub>O. Always use the balanced equation ratio."}];
+var TOPICS=["Choosing a method", "Making soluble salts", "Precipitation and ionic equations", "Titration and calculations"];
+var BANDS={"Exceeding": {"t": "Excellent. You can plan and calculate any salt preparation.", "tips": ["Practise full 6-mark method questions for each type of salt.", "Write ionic equations for every precipitation you meet."]}, "Secure": {"t": "Good. A few details need tightening.", "tips": ["Check the solubility rules before choosing a method.", "Practise the equation: moles = concentration × volume (in dm³)."]}, "Developing": {"t": "You know the main ideas. Keep practising.", "tips": ["Learn which method suits which salt.", "Revise how to balance equations and write ionic equations."]}, "Beginning": {"t": "You are starting to build understanding. Ask for help and try again.", "tips": ["Revise the solubility rules and the three methods.", "Ask your teacher to go through a worked example."]}};
+var $=function(id){return document.getElementById(id)};
+var order,idx,score,missed,locked;
+function shuffle(a){for(var i=a.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1));var t=a[i];a[i]=a[j];a[j]=t}return a}
+function chk(){$("go").disabled=!$("nm").value.trim()}
+$("nm").addEventListener("input",chk);
+$("go").onclick=function(){start()};
+$("again").onclick=function(){$("end").classList.add("hidden");start()};
+function start(){order=shuffle(Q.map(function(_,i){return i}));idx=0;score=0;missed=[];$("start").classList.add("hidden");$("play").classList.remove("hidden");show()}
+function show(){
+  locked=false;var n=order[idx],q=Q[n];
+  $("cnt").textContent="Question "+(idx+1)+" of "+Q.length;$("sc").textContent="Score: "+score;
+  $("pg").style.width=(idx/Q.length*100)+"%";
+  $("qt").innerHTML=q.q;$("fb").className="fb hidden";$("next").classList.add("hidden");
+  var idxs=shuffle(q.o.map(function(_,i){return i}));var h="";
+  idxs.forEach(function(oi,k){h+='<button class="opt" data-o="'+oi+'"><span class="k">'+"ABCD"[k]+'</span><span>'+q.o[oi]+'</span></button>'});
+  $("opts").innerHTML=h;
+  Array.prototype.forEach.call(document.querySelectorAll(".opt"),function(b){b.onclick=function(){pick(b)}});
+}
+function pick(b){
+  if(locked)return;locked=true;var n=order[idx],q=Q[n],c=+b.dataset.o,ok=c===q.a;
+  Array.prototype.forEach.call(document.querySelectorAll(".opt"),function(x){x.disabled=true;if(+x.dataset.o===q.a)x.classList.add("right")});
+  if(ok){score++}else{b.classList.add("wrong");missed.push(n)}
+  var fb=$("fb");fb.className="fb "+(ok?"ok":"no");
+  fb.innerHTML="<strong>"+(ok?"Correct.":"Not quite.")+"</strong> "+q.e;
+  $("sc").textContent="Score: "+score;
+  $("next").textContent=idx===Q.length-1?"See my result":"Next question";$("next").classList.remove("hidden");$("next").focus();
+}
+$("next").onclick=function(){idx++;if(idx>=Q.length)finish();else show()};
+function finish(){
+  $("play").classList.add("hidden");$("end").classList.remove("hidden");
+  var pct=Math.round(score/Q.length*100);
+  $("who").textContent=$("nm").value.trim()+($("cl").value.trim()?" · "+$("cl").value.trim():"");
+  $("fin").textContent=score+" / "+Q.length+" ("+pct+"%)";
+  var b=pct>=85?"Exceeding":pct>=65?"Secure":pct>=45?"Developing":"Beginning";
+  var t=BANDS[b].t,tips=BANDS[b].tips.slice();
+  var by={};TOPICS.forEach(function(x){by[x]={s:0,n:0}});
+  Q.forEach(function(q,i){by[q.t].n++});
+  Q.forEach(function(q,i){if(missed.indexOf(i)<0)by[q.t].s++});
+  var worst=null,wp=2;
+  $("tp").innerHTML=TOPICS.map(function(x){var p=by[x].s/by[x].n;if(p<wp){wp=p;worst=x}return'<div class="r"><span class="n">'+x+'</span><span class="b"><i style="width:'+Math.round(p*100)+'%"></i></span><span class="v">'+by[x].s+'/'+by[x].n+'</span></div>'}).join("");
+  if(wp<1)tips.push("Revise first: <strong>"+worst+"</strong>.");
+  $("band").textContent=b;$("bandtxt").textContent=t;
+  $("tips").innerHTML=tips.map(function(x){return"<li>"+x+"</li>"}).join("");
+  var r=$("review");
+  if(!missed.length){r.innerHTML="<p>Full marks. Nothing to review.</p>"}
+  else{r.innerHTML=missed.map(function(n){var q=Q[n];return'<div class="rev"><div><strong>'+q.q+'</strong></div><div style="color:var(--ok)">Answer: '+q.o[q.a]+'</div><div style="color:var(--muted)">'+q.e+'</div></div>'}).join("")}
+  window.scrollTo(0,0);
+}
+</script>
+</body>
+</html>
