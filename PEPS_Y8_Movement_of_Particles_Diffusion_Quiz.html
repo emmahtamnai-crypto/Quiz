@@ -1,0 +1,143 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Movement of Particles and Diffusion Quiz</title>
+<style>
+:root{--bg:#f5f7fb;--card:#fff;--ink:#1b2333;--muted:#5f6b7f;--line:#d9dfea;--brand:#1f4e8c;--ok:#1b7f4b;--okbg:#e6f5ec;--bad:#b3261e;--badbg:#fbe9e7;--sel:#e8f0fb}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#10151f;--card:#18202e;--ink:#e8edf6;--muted:#9aa7bd;--line:#2b3649;--brand:#7fb0ee;--ok:#5fd394;--okbg:#14301f;--bad:#ff8a80;--badbg:#3a1a18;--sel:#1e2b42}}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.5 system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif}
+.wrap{max-width:720px;margin:0 auto;padding:20px 16px 48px}
+header{text-align:center;margin-bottom:18px}
+header .school{font-size:13px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+h1{font-size:26px;margin:4px 0}
+header p{margin:4px 0;color:var(--muted)}
+.card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:20px;margin-bottom:16px}
+label{display:block;font-weight:600;margin:10px 0 4px}
+input[type=text]{width:100%;padding:11px 12px;border:1px solid var(--line);border-radius:10px;background:var(--bg);color:var(--ink);font-size:16px}
+button{font:inherit;cursor:pointer}
+.btn{background:var(--brand);color:#fff;border:0;border-radius:10px;padding:12px 20px;font-weight:600;min-height:44px}
+.btn.sec{background:transparent;color:var(--brand);border:1px solid var(--brand)}
+.btn:disabled{opacity:.45;cursor:not-allowed}
+.bar{height:8px;background:var(--line);border-radius:6px;overflow:hidden;margin-bottom:14px}
+.bar i{display:block;height:100%;background:var(--brand);width:0;transition:width .3s}
+.meta{display:flex;justify-content:space-between;color:var(--muted);font-size:14px;margin-bottom:8px}
+.q{font-size:19px;font-weight:600;margin:6px 0 14px}
+.opt{display:flex;gap:10px;align-items:flex-start;width:100%;text-align:left;background:var(--card);color:var(--ink);border:1.5px solid var(--line);border-radius:10px;padding:12px 14px;margin-bottom:10px;min-height:48px}
+.opt:hover:not(:disabled){background:var(--sel)}
+.opt .k{font-weight:700;color:var(--brand);min-width:20px}
+.opt.right{background:var(--okbg);border-color:var(--ok)}
+.opt.wrong{background:var(--badbg);border-color:var(--bad)}
+.fb{margin-top:10px;padding:12px 14px;border-radius:10px;border:1px solid var(--line)}
+.fb.ok{background:var(--okbg);border-color:var(--ok)}
+.fb.no{background:var(--badbg);border-color:var(--bad)}
+.score{font-size:46px;font-weight:700;text-align:center;margin:4px 0}
+.band{text-align:center;font-weight:700;color:var(--brand);font-size:20px}
+ul.tips{padding-left:20px}
+.rev{border-top:1px solid var(--line);padding:12px 0}
+.rev:first-child{border-top:0}
+.hidden{display:none}
+.row{display:flex;gap:10px;flex-wrap:wrap}
+sub,sup{line-height:0}
+#tp .r{display:flex;align-items:center;gap:10px;margin:8px 0}#tp .r span.n{flex:0 0 46%}#tp .r .b{flex:1;height:10px;background:var(--line);border-radius:6px;overflow:hidden}#tp .r .b i{display:block;height:100%;background:var(--brand)}#tp .r span.v{min-width:44px;text-align:right;font-weight:600}
+@media print{body{background:#fff;color:#000}.btn,.row{display:none}.card{border:1px solid #999}}
+</style>
+</head>
+<body>
+<div class="wrap">
+<header>
+<div class="school">Providence English Private School</div>
+<h1>Movement of Particles and Diffusion Quiz</h1>
+<p>Year 8 Science · Miss Emmah M. Tamnai</p>
+</header>
+
+<section id="start" class="card">
+<p>24 questions on how particles move in solids, liquids and gases, and on diffusion. You get feedback after every answer and a score for each topic at the end.</p>
+<label for="nm">Name</label><input id="nm" type="text" autocomplete="name">
+<label for="cl">Class</label><input id="cl" type="text" placeholder="e.g. 11A">
+<p style="margin-top:16px"><button class="btn" id="go" disabled>Start quiz</button></p>
+</section>
+
+<section id="play" class="card hidden">
+<div class="meta"><span id="cnt"></span><span id="sc"></span></div>
+<div class="bar"><i id="pg"></i></div>
+<div class="q" id="qt"></div>
+<div id="opts"></div>
+<div id="fb" class="fb hidden" role="status" aria-live="polite"></div>
+<p style="margin-top:14px"><button class="btn hidden" id="next">Next question</button></p>
+</section>
+
+<section id="end" class="hidden">
+<div class="card">
+<div id="who" style="text-align:center;color:var(--muted)"></div>
+<div class="score" id="fin"></div>
+<div class="band" id="band"></div>
+<p id="bandtxt" style="text-align:center;color:var(--muted)"></p>
+<div class="row" style="justify-content:center">
+<button class="btn" id="again">Try again</button>
+<button class="btn sec" onclick="window.print()">Print / save result</button>
+</div>
+</div>
+<div class="card"><h2 style="margin-top:0;font-size:18px">Score by topic</h2><div id="tp"></div></div>
+<div class="card"><h2 style="margin-top:0;font-size:18px">Next steps</h2><ul class="tips" id="tips"></ul></div>
+<div class="card"><h2 style="margin-top:0;font-size:18px">Questions to review</h2><div id="review"></div></div>
+</section>
+</div>
+
+<script>
+var Q=[{"t": "Particles in solids, liquids and gases", "q": "Which statement about the particles in a gas is correct?", "o": ["they do not move", "they move randomly in all directions and are far apart", "they are close together and slide past each other", "they vibrate in fixed positions"], "a": 1, "e": "Gas particles are far apart, have the most energy and move quickly in random directions."}, {"t": "Particles in solids, liquids and gases", "q": "Which state of matter has particles that vibrate in fixed positions?", "o": ["all three states", "solid", "liquid", "gas"], "a": 1, "e": "Solid particles are tightly packed in a regular pattern and can only vibrate."}, {"t": "Particles in solids, liquids and gases", "q": "Which state of matter has particles that are close together but can slide past each other?", "o": ["liquid", "solid", "none of the states", "gas"], "a": 0, "e": "Liquid particles are close but not fixed, so liquids flow and take the shape of the container."}, {"t": "Particles in solids, liquids and gases", "q": "What is the main reason gases can be squashed (compressed) easily?", "o": ["the particles are stuck together", "there are large gaps between the particles", "the particles are very small", "the particles stop moving"], "a": 1, "e": "Gas particles are far apart, so they can be pushed closer together."}, {"t": "Particles in solids, liquids and gases", "q": "What happens to the movement of particles when a substance is heated?", "o": ["they move faster", "they get smaller", "they move slower", "they stop moving"], "a": 0, "e": "Heating gives particles more kinetic energy, so they move or vibrate faster."}, {"t": "Particles in solids, liquids and gases", "q": "Which description best fits the movement of particles in a liquid?", "o": ["moving very fast and far apart", "fixed in position and vibrating only", "moving around each other randomly", "not moving at all"], "a": 2, "e": "Liquid particles move around but stay close together."}, {"t": "Diffusion in gases", "q": "What is diffusion?", "o": ["the evaporation of a liquid only", "the movement of particles from an area of high concentration to an area of low concentration", "the movement of particles from low to high concentration", "the melting of a solid"], "a": 1, "e": "Diffusion is the net movement of particles from where there are many to where there are fewer, caused by random motion."}, {"t": "Diffusion in gases", "q": "A bottle of perfume is opened at the front of a room. Why can people at the back smell it after a while?", "o": ["the perfume particles melt", "air particles carry the smell in one straight line", "the perfume particles get bigger", "perfume particles spread out by moving randomly between air particles"], "a": 3, "e": "The particles of perfume move randomly and collide with air particles, spreading throughout the room."}, {"t": "Diffusion in gases", "q": "Why does diffusion in gases happen without any stirring?", "o": ["the particles are attracted to each other", "gravity pushes them sideways", "the particles are always moving randomly", "the particles are at rest"], "a": 2, "e": "Gas particles move constantly in random directions, so they mix without stirring."}, {"t": "Diffusion in gases", "q": "Ammonia gas and hydrogen chloride gas are released at opposite ends of a long tube. Where do they meet and form a white ring?", "o": ["at the ammonia end", "closer to the ammonia end", "closer to the hydrogen chloride end", "exactly in the middle"], "a": 2, "e": "Ammonia particles are lighter and move faster, so they travel further before meeting the heavier hydrogen chloride particles."}, {"t": "Diffusion in gases", "q": "Which of these is an example of diffusion in a gas?", "o": ["the smell of baking spreading through a house", "a ball falling to the ground", "ice melting in a drink", "sugar dissolving in tea"], "a": 0, "e": "Smells spread because gas particles move randomly and mix."}, {"t": "Diffusion in gases", "q": "Why do gases diffuse faster than liquids?", "o": ["gas particles are more attracted to each other", "gas particles are bigger", "gas particles move faster and are further apart", "gas particles are heavier"], "a": 2, "e": "Gas particles have more energy and fewer collisions, so they spread out more quickly."}, {"t": "Diffusion in liquids", "q": "A drop of food colouring is added to a beaker of still water. What happens?", "o": ["the colour slowly spreads through all the water", "the colour stays in one place", "the water changes state", "the colour sinks to the bottom"], "a": 0, "e": "Food colouring particles and water particles move randomly and mix."}, {"t": "Diffusion in liquids", "q": "Why does the colour spread without stirring?", "o": ["gravity pushes the colour sideways", "the water particles are stationary", "water and colouring particles are moving randomly and mixing", "the colouring evaporates"], "a": 2, "e": "Particles in a liquid are always moving, so substances mix by diffusion."}, {"t": "Diffusion in liquids", "q": "What is the final result when diffusion is complete in a mixture?", "o": ["the particles stop moving", "the particles all become one type", "all the particles are at the bottom", "the particles are evenly spread out"], "a": 3, "e": "The mixture becomes uniform, but particles continue to move."}, {"t": "Diffusion in liquids", "q": "A student drops a purple crystal into a beaker of water. After one day the water is purple throughout. What does this show?", "o": ["the water particles disappeared", "the crystal melted", "the water evaporated", "particles move and spread from high to low concentration"], "a": 3, "e": "The crystal dissolves and its particles diffuse through the water."}, {"t": "Diffusion in liquids", "q": "Why does diffusion in liquids happen more slowly than in gases?", "o": ["liquid particles are bigger", "liquids are always cold", "liquid particles do not move", "liquid particles are closer together and collide more often"], "a": 3, "e": "Particles in liquids are close together, so each particle's path is blocked by many collisions."}, {"t": "Diffusion in liquids", "q": "Which is an example of diffusion in a liquid?", "o": ["a candle burning", "ice forming in a freezer", "a balloon expanding when heated", "a tea bag colouring the water in a cup"], "a": 3, "e": "Tea particles move from the bag into the water and spread out."}, {"t": "Speed of diffusion", "q": "How does increasing the temperature affect the speed of diffusion?", "o": ["it makes diffusion slower", "it stops diffusion", "it makes diffusion faster", "it has no effect"], "a": 2, "e": "Particles move faster when heated, so they spread out more quickly."}, {"t": "Speed of diffusion", "q": "Food colouring spreads faster in warm water than in cold water. Why?", "o": ["particles in warm water have more energy and move faster", "warm water has bigger particles", "warm water is heavier", "cold water particles are stationary"], "a": 0, "e": "Higher temperature means faster particle movement and faster diffusion."}, {"t": "Speed of diffusion", "q": "A student investigates how temperature affects diffusion. Which variable should the student change?", "o": ["the temperature of the water", "the time it takes to spread", "the amount of food colouring", "the type of beaker"], "a": 0, "e": "The independent variable is the one you change. Keep the others the same."}, {"t": "Speed of diffusion", "q": "In the same investigation, which variable should the student measure?", "o": ["the size of the beaker", "the time for the colour to spread", "the temperature of the water", "the volume of water"], "a": 1, "e": "The dependent variable is the one you measure."}, {"t": "Speed of diffusion", "q": "Which is a control variable in a fair test of diffusion at different temperatures?", "o": ["the speed of diffusion", "the time taken to spread", "the temperature", "the volume of water"], "a": 3, "e": "Control variables are kept the same so that the test is fair."}, {"t": "Speed of diffusion", "q": "Which result matches the particle model? Colour spreads through 100 cm<sup>3</sup> of water in 480 s at 10 °C. At 50 °C the time is most likely:", "o": ["exactly 480 s", "about 120 s", "about 960 s", "never"], "a": 1, "e": "Higher temperature means faster diffusion, so the time taken is less."}];
+var TOPICS=["Particles in solids, liquids and gases", "Diffusion in gases", "Diffusion in liquids", "Speed of diffusion"];
+var BANDS={"Exceeding": {"t": "Excellent. You can explain diffusion using the particle model.", "tips": ["Explain how temperature, state and particle mass change the speed of diffusion.", "Plan a fair test with the independent, dependent and control variables."]}, "Secure": {"t": "Good. A few details need tightening.", "tips": ["Use the words particles, random movement and concentration in every explanation.", "Remember: gases diffuse faster than liquids."]}, "Developing": {"t": "You know the main ideas. Keep practising.", "tips": ["Revise how particles are arranged and move in each state.", "Practise defining diffusion in your own words."]}, "Beginning": {"t": "You are starting to build understanding. Ask for help and try again.", "tips": ["Revise the three states of matter and their particles.", "Ask your teacher to show the food colouring demonstration again."]}};
+var $=function(id){return document.getElementById(id)};
+var order,idx,score,missed,locked;
+function shuffle(a){for(var i=a.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1));var t=a[i];a[i]=a[j];a[j]=t}return a}
+function chk(){$("go").disabled=!$("nm").value.trim()}
+$("nm").addEventListener("input",chk);
+$("go").onclick=function(){start()};
+$("again").onclick=function(){$("end").classList.add("hidden");start()};
+function start(){order=shuffle(Q.map(function(_,i){return i}));idx=0;score=0;missed=[];$("start").classList.add("hidden");$("play").classList.remove("hidden");show()}
+function show(){
+  locked=false;var n=order[idx],q=Q[n];
+  $("cnt").textContent="Question "+(idx+1)+" of "+Q.length;$("sc").textContent="Score: "+score;
+  $("pg").style.width=(idx/Q.length*100)+"%";
+  $("qt").innerHTML=q.q;$("fb").className="fb hidden";$("next").classList.add("hidden");
+  var idxs=shuffle(q.o.map(function(_,i){return i}));var h="";
+  idxs.forEach(function(oi,k){h+='<button class="opt" data-o="'+oi+'"><span class="k">'+"ABCD"[k]+'</span><span>'+q.o[oi]+'</span></button>'});
+  $("opts").innerHTML=h;
+  Array.prototype.forEach.call(document.querySelectorAll(".opt"),function(b){b.onclick=function(){pick(b)}});
+}
+function pick(b){
+  if(locked)return;locked=true;var n=order[idx],q=Q[n],c=+b.dataset.o,ok=c===q.a;
+  Array.prototype.forEach.call(document.querySelectorAll(".opt"),function(x){x.disabled=true;if(+x.dataset.o===q.a)x.classList.add("right")});
+  if(ok){score++}else{b.classList.add("wrong");missed.push(n)}
+  var fb=$("fb");fb.className="fb "+(ok?"ok":"no");
+  fb.innerHTML="<strong>"+(ok?"Correct.":"Not quite.")+"</strong> "+q.e;
+  $("sc").textContent="Score: "+score;
+  $("next").textContent=idx===Q.length-1?"See my result":"Next question";$("next").classList.remove("hidden");$("next").focus();
+}
+$("next").onclick=function(){idx++;if(idx>=Q.length)finish();else show()};
+function finish(){
+  $("play").classList.add("hidden");$("end").classList.remove("hidden");
+  var pct=Math.round(score/Q.length*100);
+  $("who").textContent=$("nm").value.trim()+($("cl").value.trim()?" · "+$("cl").value.trim():"");
+  $("fin").textContent=score+" / "+Q.length+" ("+pct+"%)";
+  var b=pct>=85?"Exceeding":pct>=65?"Secure":pct>=45?"Developing":"Beginning";
+  var t=BANDS[b].t,tips=BANDS[b].tips.slice();
+  var by={};TOPICS.forEach(function(x){by[x]={s:0,n:0}});
+  Q.forEach(function(q,i){by[q.t].n++});
+  Q.forEach(function(q,i){if(missed.indexOf(i)<0)by[q.t].s++});
+  var worst=null,wp=2;
+  $("tp").innerHTML=TOPICS.map(function(x){var p=by[x].s/by[x].n;if(p<wp){wp=p;worst=x}return'<div class="r"><span class="n">'+x+'</span><span class="b"><i style="width:'+Math.round(p*100)+'%"></i></span><span class="v">'+by[x].s+'/'+by[x].n+'</span></div>'}).join("");
+  if(wp<1)tips.push("Revise first: <strong>"+worst+"</strong>.");
+  $("band").textContent=b;$("bandtxt").textContent=t;
+  $("tips").innerHTML=tips.map(function(x){return"<li>"+x+"</li>"}).join("");
+  var r=$("review");
+  if(!missed.length){r.innerHTML="<p>Full marks. Nothing to review.</p>"}
+  else{r.innerHTML=missed.map(function(n){var q=Q[n];return'<div class="rev"><div><strong>'+q.q+'</strong></div><div style="color:var(--ok)">Answer: '+q.o[q.a]+'</div><div style="color:var(--muted)">'+q.e+'</div></div>'}).join("")}
+  window.scrollTo(0,0);
+}
+</script>
+</body>
+</html>
